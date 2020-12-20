@@ -1,0 +1,22 @@
+package {{converterPackage}};
+
+import javax.annotation.processing.Generated;
+{{#classesData}}
+import {{domainFullName}};
+import {{protoFullName}};
+{{/classesData}}
+
+@Generated(value = "{{generator}}")
+public class {{converterClass}} {
+    {{#classesData}}
+    static public {{protoClass}} toProto({{domainClass}} domain) {
+        {{protoClass}}.Builder builder = {{protoClass}}.newBuilder();
+
+        {{#fieldsData}}
+         builder.{{protoSetterMethod}}(domain.{{domainGetterMethod}}());
+        {{/fieldsData}}
+
+        return builder.build();
+    }
+    {{/classesData}}
+}

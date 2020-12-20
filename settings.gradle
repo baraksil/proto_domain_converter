@@ -1,0 +1,3 @@
+rootProject.name = 'proto_domain_converter'
+include 'test_generation'
+

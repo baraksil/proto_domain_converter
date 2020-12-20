@@ -1,0 +1,15 @@
+plugins {
+    id 'java-library'
+}
+
+group 'com.forescout.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.github.spullara.mustache.java:compiler:0.9.7'
+    implementation 'com.google.protobuf:protobuf-java:3.14.0'
+}
