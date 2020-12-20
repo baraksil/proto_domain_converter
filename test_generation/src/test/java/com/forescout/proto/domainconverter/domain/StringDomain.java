@@ -2,13 +2,12 @@ package com.forescout.proto.domainconverter.domain;
 
 import com.forescout.proto.domainconverter.annotations.ProtoClass;
 import com.forescout.proto.domainconverter.annotations.ProtoField;
-import com.forescout.proto.domainconverter.test.proto.SimpleContainerProto;
+import com.forescout.proto.domainconverter.test.proto.StringProto;
 import lombok.Data;
 
 @Data
-@ProtoClass(protoClass = SimpleContainerProto.class)
-public class SimpleContainerDomain {
-
+@ProtoClass(protoClass = StringProto.class)
+public class StringDomain {
     @ProtoField
-    private PrimitiveDomain primitives;
+    private String stringValue;
 }

@@ -14,8 +14,11 @@ message PrimitivesProto {
     bool booleanValue = 5;
 }
 
+message StringProto {
+    string stringValue = 6;
+}
+
 message SimpleContainerProto {
-	string strValue = 1;
   PrimitivesProto primitives = 2;
 }
 

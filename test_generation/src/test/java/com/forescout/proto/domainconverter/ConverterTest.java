@@ -1,14 +1,8 @@
 package com.forescout.proto.domainconverter;
 
-import com.forescout.proto.domainconverter.domain.MessageListDomain;
-import com.forescout.proto.domainconverter.domain.PrimitiveListDomain;
-import com.forescout.proto.domainconverter.domain.PrimitiveDomain;
-import com.forescout.proto.domainconverter.domain.SimpleContainerDomain;
+import com.forescout.proto.domainconverter.domain.*;
 import com.forescout.proto.domainconverter.generated.ProtoDomainConverter;
-import com.forescout.proto.domainconverter.test.proto.MessageListProto;
-import com.forescout.proto.domainconverter.test.proto.PrimitiveListProto;
-import com.forescout.proto.domainconverter.test.proto.PrimitivesProto;
-import com.forescout.proto.domainconverter.test.proto.SimpleContainerProto;
+import com.forescout.proto.domainconverter.test.proto.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -24,6 +18,15 @@ public class ConverterTest {
         PrimitiveDomain domain = createPrimitiveDomain();
         PrimitivesProto proto = ProtoDomainConverter.toProto(domain);
         PrimitivesProto expected = createPrimitivesProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testStringToProto() {
+        StringDomain domain = createStringDomain();
+        StringProto proto = ProtoDomainConverter.toProto(domain);
+        StringProto expected = createStringProto();
 
         assertEquals(expected, proto);
     }
@@ -76,9 +79,18 @@ public class ConverterTest {
                 .build();
     }
 
+    private StringDomain createStringDomain() {
+        StringDomain stringDomain = new StringDomain();
+        stringDomain.setStringValue("aaaa");
+        return stringDomain;
+    }
+
+    private StringProto createStringProto() {
+        return StringProto.newBuilder().setStringValue("aaaa").build();
+    }
+
     private SimpleContainerDomain createSimpleContainerDomain() {
         SimpleContainerDomain simpleContainerDomain =  new SimpleContainerDomain();
-        simpleContainerDomain.setStrValue("yabadabadoo");
         simpleContainerDomain.setPrimitives(createPrimitiveDomain());
 
         return simpleContainerDomain;
@@ -86,7 +98,6 @@ public class ConverterTest {
 
     private SimpleContainerProto createSimpleContainerProto() {
         return SimpleContainerProto.newBuilder()
-                .setStrValue("yabadabadoo")
                 .setPrimitives(createPrimitivesProto())
                 .build();
     }
