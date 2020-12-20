@@ -22,3 +22,7 @@ message SimpleContainerProto {
 message PrimitiveListProto {
     repeated int32 listInt = 1;
 }
+
+message MessageListProto {
+    repeated PrimitivesProto messageList = 1;
+}

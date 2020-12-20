@@ -23,16 +23,32 @@ public class ConversionData {
         List<FieldData> fieldsData = new ArrayList<>();
     }
 
+    enum FieldType {
+        MESSAGE,
+        BOOLEAN,
+        PRIMITIVE_LIST,
+        MESSAGE_LIST,
+        OTHER
+    }
     static class FieldData {
-        boolean isProtoMessage;
-        String protoSetterMethod;
-        String domainGetterMethod;
+        FieldType fieldType;
+        String protoFieldMethodSuffix;
+        String domainFieldMethodSuffix;
 
-        String convertDomainFieldToProto() {
-            if(isProtoMessage) {
-                return "toProto(domain." + domainGetterMethod + "())";
-            } else {
-                return "domain." + domainGetterMethod + "()";
+        String addToBuilderCommand() {
+            switch (fieldType) {
+                case BOOLEAN:
+                    return "builder.set" + protoFieldMethodSuffix + "(domain.is" + domainFieldMethodSuffix + "())";
+                case MESSAGE:
+                    return "builder.set" + protoFieldMethodSuffix + "(toProto(domain.get" + domainFieldMethodSuffix + "()))";
+                case PRIMITIVE_LIST:
+                    return "builder.addAll" + protoFieldMethodSuffix + "(domain.get" + domainFieldMethodSuffix + "())";
+                case MESSAGE_LIST:
+                    return "domain.get" + domainFieldMethodSuffix + "().forEach(item -> builder.add" + protoFieldMethodSuffix + "(toProto(item)))";
+                case OTHER:
+                    return "builder.set" + protoFieldMethodSuffix + "(domain.get" + domainFieldMethodSuffix + "())";
+                default:
+                    throw new RuntimeException("Unhandled field type: " + fieldType);
             }
         }
     }

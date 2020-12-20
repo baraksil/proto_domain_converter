@@ -13,7 +13,7 @@ public class {{converterClass}} {
         {{protoClass}}.Builder builder = {{protoClass}}.newBuilder();
 
         {{#fieldsData}}
-         builder.{{protoSetterMethod}}({{convertDomainFieldToProto}});
+        {{{addToBuilderCommand}}};
         {{/fieldsData}}
 
         return builder.build();
