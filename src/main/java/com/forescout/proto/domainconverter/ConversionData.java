@@ -24,7 +24,16 @@ public class ConversionData {
     }
 
     static class FieldData {
+        boolean isProtoMessage;
         String protoSetterMethod;
         String domainGetterMethod;
+
+        String convertDomainFieldToProto() {
+            if(isProtoMessage) {
+                return "toProto(domain." + domainGetterMethod + "())";
+            } else {
+                return "domain." + domainGetterMethod + "()";
+            }
+        }
     }
 }

@@ -15,6 +15,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
@@ -123,8 +124,18 @@ public class ConverterGenerator extends AbstractProcessor {
                 StringUtils.lowerUnderscoreToPascalCase(protoFieldAnnotation.protoName());
         fieldData.protoSetterMethod = "set" + protoSetterSuffix;
 
-        String getterPrefix = field.asType().getKind().equals(TypeKind.BOOLEAN) ? "is" : "get";
+        TypeMirror fieldType = field.asType();
+        String getterPrefix = fieldType.getKind().equals(TypeKind.BOOLEAN) ? "is" : "get";
         fieldData.domainGetterMethod = getterPrefix + StringUtils.capitalize(field.getSimpleName().toString());
+
+        info("field: " + field + " fieldType: " + fieldType);
+        if(fieldType.getKind().equals(TypeKind.DECLARED)) {
+            Types typeUtils = processingEnv.getTypeUtils();
+            TypeElement typeElement = (TypeElement) typeUtils.asElement(fieldType);
+            fieldData.isProtoMessage = typeElement.getAnnotation(ProtoClass.class) != null;
+            info("Declared Type. fieldData.isProtoMessage: " + fieldData.isProtoMessage +
+                    " annotations: " + fieldType.getAnnotationMirrors());
+        }
 
         return fieldData;
     }
