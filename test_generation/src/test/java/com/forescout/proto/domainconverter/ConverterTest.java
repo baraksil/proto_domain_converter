@@ -1,11 +1,16 @@
 package com.forescout.proto.domainconverter;
 
+import com.forescout.proto.domainconverter.domain.PrimitiveListDomain;
 import com.forescout.proto.domainconverter.domain.PrimitiveDomain;
 import com.forescout.proto.domainconverter.domain.SimpleContainerDomain;
 import com.forescout.proto.domainconverter.generated.ProtoDomainConverter;
+import com.forescout.proto.domainconverter.test.proto.PrimitiveListProto;
 import com.forescout.proto.domainconverter.test.proto.PrimitivesProto;
 import com.forescout.proto.domainconverter.test.proto.SimpleContainerProto;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,6 +31,15 @@ public class ConverterTest {
         SimpleContainerDomain domain = createSimpleContainerDomain();
         SimpleContainerProto proto = ProtoDomainConverter.toProto(domain);
         SimpleContainerProto expected = createSimpleContainerProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testListToProto() {
+        PrimitiveListDomain domain = createListDomain();
+        PrimitiveListProto proto = ProtoDomainConverter.toProto(domain);
+        PrimitiveListProto expected = createPrimitiveListProto();
 
         assertEquals(expected, proto);
     }
@@ -64,5 +78,15 @@ public class ConverterTest {
                 .setStrValue("yabadabadoo")
                 .setPrimitives(createPrimitivesProto())
                 .build();
+    }
+
+    private PrimitiveListDomain createListDomain() {
+        PrimitiveListDomain listDomain = new PrimitiveListDomain();
+        listDomain.setListInt(new ArrayList(List.of(1, 2, 3)));
+        return listDomain;
+    }
+
+    private PrimitiveListProto createPrimitiveListProto() {
+        return PrimitiveListProto.newBuilder().addAllListInt(List.of(1, 2, 3)).build();
     }
 }

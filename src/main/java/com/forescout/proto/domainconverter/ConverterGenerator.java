@@ -12,6 +12,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -117,27 +119,48 @@ public class ConverterGenerator extends AbstractProcessor {
         if(protoFieldAnnotation == null) {
             return null;
         }
-
+        TypeMirror fieldType = field.asType();
         ConversionData.FieldData fieldData = new ConversionData.FieldData();
+
+        fieldData.protoSetterMethod = getProtoSetterMethod(field, fieldType, protoFieldAnnotation);
+        fieldData.domainGetterMethod = getDomainGetterMethod(field, fieldType);
+        fieldData.isProtoMessage = isProtoMessage(fieldType);
+
+
+        return fieldData;
+    }
+
+    private boolean isProtoMessage(TypeMirror fieldType) {
+        if(fieldType.getKind().equals(TypeKind.DECLARED)) {
+            return getAnnotation(fieldType, ProtoClass.class) != null;
+        }
+
+        return false;
+    }
+
+    private <A extends Annotation> A getAnnotation(TypeMirror typeMirror, Class<A> annotationClass) {
+        Types typeUtils = processingEnv.getTypeUtils();
+        TypeElement typeElement = (TypeElement) typeUtils.asElement(typeMirror);
+        return typeElement.getAnnotation(annotationClass);
+    }
+
+    private String getProtoSetterMethod(VariableElement field, TypeMirror fieldType, ProtoField protoFieldAnnotation) {
         String protoSetterSuffix = protoFieldAnnotation.protoName().equals("") ?
                 StringUtils.capitalize(field.getSimpleName().toString()):
                 StringUtils.lowerUnderscoreToPascalCase(protoFieldAnnotation.protoName());
-        fieldData.protoSetterMethod = "set" + protoSetterSuffix;
+        TypeElement listTypeElement = processingEnv.getElementUtils().getTypeElement("java.util.List");
+        Types typeUtil = processingEnv.getTypeUtils();
+        DeclaredType listType = typeUtil.getDeclaredType(listTypeElement, typeUtil.getWildcardType(null, null));
 
-        TypeMirror fieldType = field.asType();
-        String getterPrefix = fieldType.getKind().equals(TypeKind.BOOLEAN) ? "is" : "get";
-        fieldData.domainGetterMethod = getterPrefix + StringUtils.capitalize(field.getSimpleName().toString());
-
-        info("field: " + field + " fieldType: " + fieldType);
-        if(fieldType.getKind().equals(TypeKind.DECLARED)) {
-            Types typeUtils = processingEnv.getTypeUtils();
-            TypeElement typeElement = (TypeElement) typeUtils.asElement(fieldType);
-            fieldData.isProtoMessage = typeElement.getAnnotation(ProtoClass.class) != null;
-            info("Declared Type. fieldData.isProtoMessage: " + fieldData.isProtoMessage +
-                    " annotations: " + fieldType.getAnnotationMirrors());
+        if(processingEnv.getTypeUtils().isAssignable(fieldType, listType)) {
+            return "addAll" + protoSetterSuffix;
         }
+        return  "set" + protoSetterSuffix;
+    }
 
-        return fieldData;
+    private String getDomainGetterMethod(VariableElement field, TypeMirror fieldType) {
+        String getterPrefix = fieldType.getKind().equals(TypeKind.BOOLEAN) ? "is" : "get";
+        return getterPrefix + StringUtils.capitalize(field.getSimpleName().toString());
     }
 
     private List<Element> getDomainFields(final TypeElement domainElement, boolean withInheritedFields) {

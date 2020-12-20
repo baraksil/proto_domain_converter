@@ -18,3 +18,7 @@ message SimpleContainerProto {
 	string strValue = 1;
   PrimitivesProto primitives = 2;
 }
+
+message PrimitiveListProto {
+    repeated int32 listInt = 1;
+}
