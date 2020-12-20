@@ -32,6 +32,14 @@ import java.util.stream.Collectors;
 @SupportedAnnotationTypes({"com.forescout.proto.domainconverter.annotations.ProtoClass"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ConverterGenerator extends AbstractProcessor {
+    private LangModelUtil langModelUtil;
+
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        langModelUtil = new LangModelUtil(processingEnv);
+    }
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         info("Processing ProtoClass annotation");
@@ -88,7 +96,7 @@ public class ConverterGenerator extends AbstractProcessor {
         classData.domainFullName = domainElement.getQualifiedName().toString();
 
         ProtoClass protoClassAnnotation = domainElement.getAnnotation(ProtoClass.class);
-        TypeMirror protoClass = getProtoClassFromAnnotation(protoClassAnnotation);
+        TypeMirror protoClass = langModelUtil.getProtoClassFromAnnotation(protoClassAnnotation);
 
         classData.protoFullName = protoClass.toString();
         classData.protoClass = StringUtils.getSimpleName(classData.protoFullName);
@@ -101,17 +109,6 @@ public class ConverterGenerator extends AbstractProcessor {
         }
 
         return classData;
-    }
-
-    private TypeMirror getProtoClassFromAnnotation(ProtoClass protoClassAnnotation) {
-        try {
-            //A hack. It always throws the exception, and this is the easiest way to get the TypeMirror of the class
-            protoClassAnnotation.protoClass();
-        }
-        catch( MirroredTypeException mte ) {
-            return mte.getTypeMirror();
-        }
-        return null;
     }
 
     private ConversionData.FieldData createFieldData(VariableElement field) {
@@ -134,12 +131,13 @@ public class ConverterGenerator extends AbstractProcessor {
         if(fieldType.getKind().equals(TypeKind.BOOLEAN)) {
             return ConversionData.FieldType.BOOLEAN;
         }
+
         if(isProtoMessage(fieldType)) {
             return ConversionData.FieldType.MESSAGE;
         }
-        if(isList(fieldType)) {
-            DeclaredType fieldDeclaredType = (DeclaredType)fieldType;
-            TypeMirror typeArgument = fieldDeclaredType.getTypeArguments().get(0);
+
+        if(langModelUtil.isList(fieldType)) {
+            TypeMirror typeArgument = langModelUtil.getGenericsTypes(fieldType).get(0);
             if(isProtoMessage(typeArgument)) {
                 return ConversionData.FieldType.MESSAGE_LIST;
             } else {
@@ -150,25 +148,12 @@ public class ConverterGenerator extends AbstractProcessor {
         return ConversionData.FieldType.OTHER;
     }
 
-    private boolean isList(TypeMirror fieldType) {
-        TypeElement listTypeElement = processingEnv.getElementUtils().getTypeElement("java.util.List");
-        Types typeUtil = processingEnv.getTypeUtils();
-        DeclaredType listType = typeUtil.getDeclaredType(listTypeElement, typeUtil.getWildcardType(null, null));
-
-        return processingEnv.getTypeUtils().isAssignable(fieldType, listType);
-    }
     private boolean isProtoMessage(TypeMirror fieldType) {
         if(fieldType.getKind().equals(TypeKind.DECLARED)) {
-            return getAnnotation(fieldType, ProtoClass.class) != null;
+            return langModelUtil.getAnnotation(fieldType, ProtoClass.class) != null;
         }
 
         return false;
-    }
-
-    private <A extends Annotation> A getAnnotation(TypeMirror typeMirror, Class<A> annotationClass) {
-        Types typeUtils = processingEnv.getTypeUtils();
-        TypeElement typeElement = (TypeElement) typeUtils.asElement(typeMirror);
-        return typeElement.getAnnotation(annotationClass);
     }
 
     private String getProtoFieldMethodSuffix(VariableElement field, ProtoField protoFieldAnnotation) {
