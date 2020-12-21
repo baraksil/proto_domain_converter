@@ -285,6 +285,36 @@ public class ConverterTest {
         assertEquals(expected, domain);
     }
 
+    @Test
+    void testOneofWithoutInheritanceToProto() {
+        OneofWithoutInheritanceDomain domain = createOneofWithoutInheritanceDomain();
+        OneofWithoutInheritanceProto proto = ProtoDomainConverter.toProto(domain);
+        OneofWithoutInheritanceProto expected = createOneofWithoutInheritanceProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testOneofWithoutInheritanceToDomain() {
+        OneofWithoutInheritanceProto proto = createOneofWithoutInheritanceProto();
+        OneofWithoutInheritanceDomain domain = ProtoDomainConverter.toDomain(proto);
+        OneofWithoutInheritanceDomain expected = createOneofWithoutInheritanceDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    private OneofWithoutInheritanceDomain createOneofWithoutInheritanceDomain() {
+        OneofWithoutInheritanceDomain domain = new OneofWithoutInheritanceDomain();
+        domain.setIntVal(3);
+        return domain;
+    }
+
+    private OneofWithoutInheritanceProto createOneofWithoutInheritanceProto() {
+        return OneofWithoutInheritanceProto.newBuilder()
+                .setIntVal(3)
+                .build();
+    }
+
     private ConcreteMapToMessageDomain createConcreteMapToMessageDomain() {
         ConcreteMapToMessageDomain domain = new ConcreteMapToMessageDomain();
         domain.setMapToMessage(Map.of(

@@ -62,4 +62,10 @@ message ConcreteMapToMessageProto {
     map<string, PrimitivesProto> map_to_message = 1;
 }
 
+message OneofWithoutInheritanceProto {
+    oneof value {
+        int32 int_val = 1;
+        PrimitivesProto primitives = 2;
+    }
+}
 
