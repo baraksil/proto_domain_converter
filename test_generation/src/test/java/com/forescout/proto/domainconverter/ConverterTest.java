@@ -159,6 +159,15 @@ public class ConverterTest {
     }
 
     @Test
+    void testPrimitiveConcreteListToDomain() {
+        ConcretePrimitiveListProto proto = createConcretePrimitiveListProto();
+        ConcretePrimitiveListDomain domain = ProtoDomainConverter.toDomain(proto);
+        ConcretePrimitiveListDomain expected = createConcretePrimitiveListDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
     void testStringListToProto() {
         StringListDomain domain = createStringListDomain();
         StringListProto proto = ProtoDomainConverter.toProto(domain);
@@ -204,6 +213,15 @@ public class ConverterTest {
     }
 
     @Test
+    void testConcreteMessageListToDomain() {
+        ConcreteMessageListProto proto = createConcreteMessageListProto();
+        ConcreteMessageListDomain domain = ProtoDomainConverter.toDomain(proto);
+        ConcreteMessageListDomain expected = createConcreteMessageListDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
     void testPrimitiveMapToProto() {
         PrimitiveMapDomain domain = createPrimitiveMapDomain();
         PrimitiveMapProto proto = ProtoDomainConverter.toProto(domain);
@@ -241,12 +259,58 @@ public class ConverterTest {
     }
 
     @Test
+    void testConcretePrimitiveMapToDomain() {
+        ConcretePrimitiveMapProto proto = createConcretePrimitiveMapProto();
+        ConcretePrimitiveMapDomain domain = ProtoDomainConverter.toDomain(proto);
+        ConcretePrimitiveMapDomain expected = createConcretePrimitiveMapDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
     void testMapToMessageToProto() {
         MapToMessageDomain domain = createMapToMessageDomain();
         MapToMessageProto proto = ProtoDomainConverter.toProto(domain);
         MapToMessageProto expected = createMapToMessageProto();
 
         assertEquals(expected, proto);
+    }
+
+    @Test
+    void testConcreteMapToMessageToDomain() {
+        ConcreteMapToMessageProto proto = createConcreteMapToMessageProto();
+        ConcreteMapToMessageDomain domain = ProtoDomainConverter.toDomain(proto);
+        ConcreteMapToMessageDomain expected = createConcreteMapToMessageDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    private ConcreteMapToMessageDomain createConcreteMapToMessageDomain() {
+        ConcreteMapToMessageDomain domain = new ConcreteMapToMessageDomain();
+        domain.setMapToMessage(Map.of(
+                "aa", createPrimitiveDomain(),
+                "bb", createPrimitiveDomain()));
+        return domain;
+    }
+
+    private ConcreteMapToMessageProto createConcreteMapToMessageProto() {
+        return ConcreteMapToMessageProto.newBuilder()
+                .putMapToMessage("aa", createPrimitivesProto())
+                .putMapToMessage("bb", createPrimitivesProto())
+                .build();
+    }
+
+    private ConcretePrimitiveMapDomain createConcretePrimitiveMapDomain() {
+        ConcretePrimitiveMapDomain domain = new ConcretePrimitiveMapDomain();
+        domain.setPrimitiveMap(Map.of(1, 2L, 3, 4L));
+        return domain;
+    }
+
+    private ConcretePrimitiveMapProto createConcretePrimitiveMapProto() {
+        return ConcretePrimitiveMapProto.newBuilder()
+                .putPrimitiveMap(1, 2)
+                .putPrimitiveMap(3, 4)
+                .build();
     }
 
     private MapToMessageDomain createMapToMessageDomain() {
@@ -331,6 +395,16 @@ public class ConverterTest {
         return PrimitiveListProto.newBuilder().addAllListInt(List.of(1, 2, 3)).build();
     }
 
+    private ConcretePrimitiveListDomain createConcretePrimitiveListDomain() {
+        ConcretePrimitiveListDomain listDomain = new ConcretePrimitiveListDomain();
+        listDomain.setIntList(new LinkedList<>(List.of(1, 2, 3)));
+        return listDomain;
+    }
+
+    private ConcretePrimitiveListProto createConcretePrimitiveListProto() {
+        return ConcretePrimitiveListProto.newBuilder().addAllIntList(List.of(1, 2, 3)).build();
+    }
+
     private StringListDomain createStringListDomain() {
         StringListDomain listDomain = new StringListDomain();
         listDomain.setStringList(new ArrayList<>(List.of("aa", "bb", "cc")));
@@ -349,6 +423,19 @@ public class ConverterTest {
 
     private MessageListProto createMessageListProto() {
         return MessageListProto.newBuilder()
+                .addMessageList(createPrimitivesProto())
+                .addMessageList(createPrimitivesProto())
+                .build();
+    }
+
+    private ConcreteMessageListDomain createConcreteMessageListDomain() {
+        ConcreteMessageListDomain listDomain = new ConcreteMessageListDomain();
+        listDomain.setMessageList(new LinkedList<>(List.of(createPrimitiveDomain(), createPrimitiveDomain())));
+        return listDomain;
+    }
+
+    private ConcreteMessageListProto createConcreteMessageListProto() {
+        return ConcreteMessageListProto.newBuilder()
                 .addMessageList(createPrimitivesProto())
                 .addMessageList(createPrimitivesProto())
                 .build();

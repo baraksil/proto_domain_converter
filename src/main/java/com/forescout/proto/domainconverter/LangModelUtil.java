@@ -3,15 +3,17 @@ package com.forescout.proto.domainconverter;
 import com.forescout.proto.domainconverter.annotations.ProtoClass;
 
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class LangModelUtil {
 
@@ -33,21 +35,32 @@ public class LangModelUtil {
     }
 
     public boolean isList(TypeMirror typeMirror) {
-        TypeElement listTypeElement = processingEnv.getElementUtils().getTypeElement("java.util.List");
-        Types typeUtil = processingEnv.getTypeUtils();
-        DeclaredType listType = typeUtil.getDeclaredType(listTypeElement, typeUtil.getWildcardType(null, null));
-
-        return typeUtil.isAssignable(typeMirror, listType);
+        return isAssignedFrom(typeMirror, List.class);
     }
 
     public boolean isMap(TypeMirror typeMirror) {
-        TypeElement mapTypeElement = processingEnv.getElementUtils().getTypeElement("java.util.Map");
-        Types typeUtil = processingEnv.getTypeUtils();
-        DeclaredType mapType = typeUtil.getDeclaredType(mapTypeElement,
-                typeUtil.getWildcardType(null, null),
-                typeUtil.getWildcardType(null, null));
+        return isAssignedFrom(typeMirror, Map.class);
+    }
 
-        return typeUtil.isAssignable(typeMirror, mapType);
+    public boolean isAssignedFrom(TypeMirror typeMirror, Class<?> supposedSuperClass) {
+        String superClassName = supposedSuperClass.getName();
+        TypeElement superTypeElement = processingEnv.getElementUtils().getTypeElement(superClassName);
+        Types typeUtil = processingEnv.getTypeUtils();
+
+        return typeUtil.isAssignable(typeMirror, typeUtil.erasure(superTypeElement.asType()));
+    }
+
+    public boolean isConcreteType(Element element) {
+        Element e = processingEnv.getTypeUtils().asElement(element.asType());
+        return !isAbstractType(e) && !isInterfaceType(e);
+    }
+
+    public boolean isAbstractType(Element element) {
+        return element.getModifiers().contains(Modifier.ABSTRACT);
+    }
+
+    public boolean isInterfaceType(Element element) {
+        return element.getKind() == ElementKind.INTERFACE;
     }
 
     public boolean isSameType(TypeMirror typeMirror, Class<?> clazz) {
@@ -69,5 +82,9 @@ public class LangModelUtil {
 
         DeclaredType fieldDeclaredType = (DeclaredType)typeMirror;
         return fieldDeclaredType.getTypeArguments();
+    }
+
+    private void info(String msg) {
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, msg);
     }
 }

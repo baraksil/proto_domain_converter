@@ -24,8 +24,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -42,7 +41,6 @@ public class ConverterGenerator extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        info("Processing ProtoClass annotation");
         ConversionData conversionData = createConversionData(annotations, roundEnv);
         if(conversionData.classesData.isEmpty()) {
             return true;
@@ -122,9 +120,35 @@ public class ConverterGenerator extends AbstractProcessor {
         fieldData.domainFieldMethodSuffix = StringUtils.capitalize(field.getSimpleName().toString());
         fieldData.protoFieldMethodSuffix = getProtoFieldMethodSuffix(field, protoFieldAnnotation);
         fieldData.fieldType = calculateFieldType(fieldType);
-
+        fieldData.dataStructureConcreteType = calculateDataStructureConcreteType(field);
 
         return fieldData;
+    }
+
+    private String calculateDataStructureConcreteType(VariableElement field) {
+        TypeMirror fieldType = field.asType();
+
+        if(langModelUtil.isList(fieldType)) {
+            if(langModelUtil.isConcreteType(field)) {
+                return processingEnv.getTypeUtils().erasure(fieldType).toString();
+            }
+
+            return ArrayList.class.getName();
+        }
+
+        if(langModelUtil.isMap(fieldType)) {
+            if(langModelUtil.isConcreteType(field)) {
+                return processingEnv.getTypeUtils().erasure(fieldType).toString();
+            }
+
+            if(langModelUtil.isAssignedFrom(fieldType, SortedMap.class)) {
+                return TreeMap.class.getName();
+            }
+
+            return HashMap.class.getName();
+        }
+
+        return null;
     }
 
     private ConversionData.FieldType calculateFieldType(TypeMirror fieldType) {

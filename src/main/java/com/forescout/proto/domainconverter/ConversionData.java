@@ -1,6 +1,7 @@
 package com.forescout.proto.domainconverter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,7 @@ public class ConversionData {
         FieldType fieldType;
         String protoFieldMethodSuffix;
         String domainFieldMethodSuffix;
+        String dataStructureConcreteType;
 
         String checkNotNullCommand() {
             switch (fieldType) {
@@ -135,17 +137,17 @@ public class ConversionData {
                 case BOOLEAN:
                 case STRING:
                 case OTHER:
-                case PRIMITIVE_MAP:
                     return "domain.set" + domainFieldMethodSuffix + "(proto.get" + protoFieldMethodSuffix + "())";
+                case PRIMITIVE_MAP:
+                    return "domain.set" + domainFieldMethodSuffix + "(new " + dataStructureConcreteType + "<>(proto.get" + protoFieldMethodSuffix + "()))";
                 case MESSAGE:
                     return "domain.set" + domainFieldMethodSuffix + "(toDomain(proto.get" + protoFieldMethodSuffix + "()))";
                 case PRIMITIVE_LIST:
-                    return "domain.set" + domainFieldMethodSuffix + "(proto.get" + protoFieldMethodSuffix + "List())";
+                    return "domain.set" + domainFieldMethodSuffix + "(new " + dataStructureConcreteType + "<>(proto.get" + protoFieldMethodSuffix + "List()))";
                 case MESSAGE_LIST:
-                    return "domain.set" + domainFieldMethodSuffix + "(proto.get" + protoFieldMethodSuffix + "List().stream().map(item -> toDomain(item)).collect(Collectors.toList()))";
-                    //return "domain.setMessageList(proto.getMessageListList().stream().map(item -> toDomain(item)).collect(Collectors.toCollection(ArrayList::new)))";
+                    return "domain.setMessageList(proto.getMessageListList().stream().map(item -> toDomain(item)).collect(Collectors.toCollection(" + dataStructureConcreteType + "::new)))";
                 case MAP_TO_MESSAGE:
-                    return "";
+                    return "domain.set"+ domainFieldMethodSuffix + "(proto.get" + protoFieldMethodSuffix + "Map().entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> toDomain(e.getValue()), (v1, v2) -> v1, " + dataStructureConcreteType + "::new)))";
                 default:
                     throw new RuntimeException("Unhandled field type: " + fieldType);
             }
