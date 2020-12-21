@@ -7,15 +7,15 @@ option java_multiple_files = true;
 option java_outer_classname = "ConverterProto";
 
 message PrimitivesProto {
-    int32 intValue = 1;
-    int64 longValue = 2;
-    float floatValue = 3;
-    double doubleValue = 4;
-    bool booleanValue = 5;
+    int32 int_value = 1;
+    int64 long_value = 2;
+    float float_value = 3;
+    double double_value = 4;
+    bool boolean_value = 5;
 }
 
 message StringProto {
-    string stringValue = 6;
+    string string_value = 6;
 }
 
 message SimpleContainerProto {
@@ -23,41 +23,43 @@ message SimpleContainerProto {
 }
 
 message PrimitiveListProto {
-    repeated int32 listInt = 1;
+    repeated int32 list_int = 1;
 }
 
 message ConcretePrimitiveListProto {
-    repeated int32 intList = 1;
+    repeated int32 int_list = 1;
 }
 
 message StringListProto {
-    repeated string stringList = 1;
+    repeated string string_list = 1;
 }
 
 message MessageListProto {
-    repeated PrimitivesProto messageList = 1;
+    repeated PrimitivesProto message_list = 1;
 }
 
 message ConcreteMessageListProto {
-    repeated PrimitivesProto messageList = 1;
+    repeated PrimitivesProto message_list = 1;
 }
 
 message PrimitiveMapProto {
-    map<int32, int64> primitiveMap = 1;
+    map<int32, int64> primitive_map = 1;
 }
 
 message MapToMessageProto {
-    map<string, PrimitivesProto> mapToMessage = 1;
+    map<string, PrimitivesProto> map_to_message = 1;
 }
 
 message ConcretePrimitiveMapProto {
-    map<int32, int64> primitiveMap = 1;
+    map<int32, int64> primitive_map = 1;
 }
 
 message SortedPrimitiveMapProto {
-    map<int32, int64> primitiveMap = 1;
+    map<int32, int64> primitive_map = 1;
 }
 
 message ConcreteMapToMessageProto {
-    map<string, PrimitivesProto> mapToMessage = 1;
+    map<string, PrimitivesProto> map_to_message = 1;
 }
+
+
