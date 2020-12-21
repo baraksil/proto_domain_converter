@@ -37,3 +37,7 @@ message MessageListProto {
 message PrimitiveMapProto {
     map<int32, int64> primitiveMap = 1;
 }
+
+message MapToMessageProto {
+    map<string, PrimitivesProto> mapToMessage = 1;
+}

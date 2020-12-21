@@ -150,7 +150,12 @@ public class ConverterGenerator extends AbstractProcessor {
         }
 
         if(langModelUtil.isMap(fieldType)) {
-            return ConversionData.FieldType.PRIMITIVE_MAP;
+            TypeMirror typeArgument = langModelUtil.getGenericsTypes(fieldType).get(1);
+            if(isProtoMessage(typeArgument)) {
+                return ConversionData.FieldType.MAP_TO_MESSAGE;
+            } else {
+                return ConversionData.FieldType.PRIMITIVE_MAP;
+            }
         }
 
         return ConversionData.FieldType.OTHER;

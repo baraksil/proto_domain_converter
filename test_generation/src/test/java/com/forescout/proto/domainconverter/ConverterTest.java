@@ -134,6 +134,30 @@ public class ConverterTest {
         assertEquals(expected, proto);
     }
 
+    @Test
+    void testMapToMessageToProto() {
+        MapToMessageDomain domain = createMapToMessageDomain();
+        MapToMessageProto proto = ProtoDomainConverter.toProto(domain);
+        MapToMessageProto expected = createMapToMessageProto();
+
+        assertEquals(expected, proto);
+    }
+
+    private MapToMessageDomain createMapToMessageDomain() {
+        MapToMessageDomain domain = new MapToMessageDomain();
+        domain.setMapToMessage(Map.of(
+                "aa", createPrimitiveDomain(),
+                "bb", createPrimitiveDomain()));
+        return domain;
+    }
+
+    private MapToMessageProto createMapToMessageProto() {
+        return MapToMessageProto.newBuilder()
+                .putMapToMessage("aa", createPrimitivesProto())
+                .putMapToMessage("bb", createPrimitivesProto())
+                .build();
+    }
+
     private PrimitiveMapDomain createPrimitiveMapDomain() {
         PrimitiveMapDomain domain = new PrimitiveMapDomain();
         domain.setPrimitiveMap(Map.of(1, 2L, 3, 4L));

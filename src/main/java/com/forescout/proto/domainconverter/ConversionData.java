@@ -30,6 +30,7 @@ public class ConversionData {
         PRIMITIVE_LIST,
         MESSAGE_LIST,
         PRIMITIVE_MAP,
+        MAP_TO_MESSAGE,
         OTHER
     }
 
@@ -44,6 +45,7 @@ public class ConversionData {
                 case PRIMITIVE_LIST:
                 case MESSAGE_LIST:
                 case PRIMITIVE_MAP:
+                case MAP_TO_MESSAGE:
                 case STRING:
                     return "if(domain.get" + domainFieldMethodSuffix + "() != null) {";
                 case OTHER:
@@ -60,6 +62,7 @@ public class ConversionData {
                 case PRIMITIVE_LIST:
                 case MESSAGE_LIST:
                 case PRIMITIVE_MAP:
+                case MAP_TO_MESSAGE:
                 case STRING:
                     return "}";
                 case OTHER:
@@ -82,6 +85,8 @@ public class ConversionData {
                     return "domain.get" + domainFieldMethodSuffix + "().forEach(item -> builder.add" + protoFieldMethodSuffix + "(toProto(item)))";
                 case PRIMITIVE_MAP:
                     return "builder.putAll" + protoFieldMethodSuffix + "(domain.get" + domainFieldMethodSuffix + "())";
+                case MAP_TO_MESSAGE:
+                    return "domain.get" + domainFieldMethodSuffix + "().forEach((key, value) -> builder.put" + protoFieldMethodSuffix + "(key, toProto(value)))";
                 case STRING:
                 case OTHER:
                     return "builder.set" + protoFieldMethodSuffix + "(domain.get" + domainFieldMethodSuffix + "())";
