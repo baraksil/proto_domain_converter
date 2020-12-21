@@ -1,7 +1,13 @@
 package com.forescout.proto.domainconverter;
 
+import com.forescout.proto.domainconverter.annotations.OneofBase;
+import com.forescout.proto.domainconverter.annotations.OneofField;
 import com.forescout.proto.domainconverter.annotations.ProtoClass;
 import com.forescout.proto.domainconverter.annotations.ProtoField;
+import com.forescout.proto.domainconverter.conversion_data.ConversionData;
+import com.forescout.proto.domainconverter.conversion_data.FieldData;
+import com.forescout.proto.domainconverter.conversion_data.OneofBaseFieldData;
+import com.forescout.proto.domainconverter.conversion_data.OneofFieldData;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
@@ -12,20 +18,13 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.lang.annotation.Annotation;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @SupportedAnnotationTypes({"com.forescout.proto.domainconverter.annotations.ProtoClass"})
@@ -100,22 +99,64 @@ public class ConverterGenerator extends AbstractProcessor {
         classData.protoClass = StringUtils.getSimpleName(classData.protoFullName);
 
         for(Element field : getDomainFields(domainElement, protoClassAnnotation.withInheritedFields())) {
-            ConversionData.FieldData fieldData = createFieldData((VariableElement)field);
+            FieldData fieldData = createFieldData((VariableElement)field);
             if(fieldData != null) {
                 classData.fieldsData.add(fieldData);
+            }
+
+            OneofBaseFieldData oneofBaseFieldData = createOneofBaseFieldData((VariableElement)field);
+            if(oneofBaseFieldData != null) {
+                classData.oneofBaseFieldsData.add(oneofBaseFieldData);
+            }
+
+            if(fieldData != null && oneofBaseFieldData != null) {
+                throw new IllegalArgumentException("field is annotated with both 'ProtoField' and 'OneofField'. field: " + field);
             }
         }
 
         return classData;
     }
 
-    private ConversionData.FieldData createFieldData(VariableElement field) {
+    private OneofBaseFieldData createOneofBaseFieldData(VariableElement field) {
+        OneofBase oneofBaseAnnotation = field.getAnnotation(OneofBase.class);
+        if(oneofBaseAnnotation == null) {
+            return null;
+        }
+
+        OneofBaseFieldData oneofBaseFieldData = new OneofBaseFieldData();
+        info("oneofBaseAnnotation: " + oneofBaseAnnotation + " oneofBaseAnnotation.oneofName: " + oneofBaseAnnotation.oneofName());
+        oneofBaseFieldData.oneofBaseField = oneofBaseAnnotation.oneofName().equals("") ?
+                StringUtils.capitalize(field.getSimpleName().toString()) :
+                StringUtils.lowerUnderscoreToPascalCase(oneofBaseAnnotation.oneofName());
+
+        for(OneofField oneofFieldAnnotation : oneofBaseAnnotation.oneOfFields()) {
+            OneofFieldData oneofFieldData = createOneofFieldData(field, oneofFieldAnnotation);
+            oneofBaseFieldData.oneOfFieldsData.add(oneofFieldData);
+        }
+
+        return oneofBaseFieldData;
+    }
+
+    private OneofFieldData createOneofFieldData(VariableElement field, OneofField oneofFieldAnnotation) {
+        OneofFieldData oneofFieldData = new OneofFieldData();
+
+        oneofFieldData.domainBaseField = StringUtils.capitalize(field.getSimpleName().toString());
+        oneofFieldData.oneOfDomainField = StringUtils.capitalize(oneofFieldAnnotation.domainField());
+        oneofFieldData.oneOfProtoField = StringUtils.lowerUnderscoreToPascalCase(oneofFieldAnnotation.protoField());
+        oneofFieldData.oneofImplClass = langModelUtil.getDomainClassFromAnnotation(oneofFieldAnnotation).toString();
+        oneofFieldData.fieldIsMessage = isProtoMessage(processingEnv.getElementUtils().getTypeElement(oneofFieldData.oneofImplClass).asType());
+
+
+        return oneofFieldData;
+    }
+
+    private FieldData createFieldData(VariableElement field) {
         ProtoField protoFieldAnnotation = field.getAnnotation(ProtoField.class);
         if(protoFieldAnnotation == null) {
             return null;
         }
         TypeMirror fieldType = field.asType();
-        ConversionData.FieldData fieldData = new ConversionData.FieldData();
+        FieldData fieldData = new FieldData();
 
         fieldData.domainFieldMethodSuffix = StringUtils.capitalize(field.getSimpleName().toString());
         fieldData.protoFieldMethodSuffix = getProtoFieldMethodSuffix(field, protoFieldAnnotation);

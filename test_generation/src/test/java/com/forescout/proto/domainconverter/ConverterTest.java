@@ -1,6 +1,8 @@
 package com.forescout.proto.domainconverter;
 
 import com.forescout.proto.domainconverter.domain.*;
+import com.forescout.proto.domainconverter.domain.oneof.OneofIntImplDomain;
+import com.forescout.proto.domainconverter.domain.oneof.OneofWithInheritanceDomain;
 import com.forescout.proto.domainconverter.generated.ProtoDomainConverter;
 import com.forescout.proto.domainconverter.test.proto.*;
 import org.junit.jupiter.api.Test;
@@ -301,6 +303,38 @@ public class ConverterTest {
         OneofWithoutInheritanceDomain expected = createOneofWithoutInheritanceDomain();
 
         assertEquals(expected, domain);
+    }
+
+    @Test
+    void testOneofWithInheritanceToProto() {
+        OneofWithInheritanceDomain domain = createOneofWithInheritanceDomain();
+        OneofWithInheritanceProto proto = ProtoDomainConverter.toProto(domain);
+        OneofWithInheritanceProto expected = createOneofWithInheritanceProto();
+
+        assertEquals(expected, proto);
+    }
+
+    //@Test
+    void testOneofWithInheritanceToDomain() {
+        OneofWithInheritanceProto proto = createOneofWithInheritanceProto();
+        OneofWithInheritanceDomain domain = ProtoDomainConverter.toDomain(proto);
+        OneofWithInheritanceDomain expected = createOneofWithInheritanceDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    private OneofWithInheritanceDomain createOneofWithInheritanceDomain() {
+        OneofWithInheritanceDomain domain = new OneofWithInheritanceDomain();
+        OneofIntImplDomain oneofIntImplDomain = new OneofIntImplDomain();
+        oneofIntImplDomain.setIntVal(3);
+        domain.setValue(oneofIntImplDomain);
+        return domain;
+    }
+
+    private OneofWithInheritanceProto createOneofWithInheritanceProto() {
+        return OneofWithInheritanceProto.newBuilder()
+                .setIntVal(3)
+                .build();
     }
 
     private OneofWithoutInheritanceDomain createOneofWithoutInheritanceDomain() {

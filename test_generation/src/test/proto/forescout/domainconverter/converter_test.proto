@@ -69,3 +69,10 @@ message OneofWithoutInheritanceProto {
     }
 }
 
+message OneofWithInheritanceProto {
+    oneof value {
+        int32 int_val = 1;
+        PrimitivesProto primitives = 2;
+    }
+}
+

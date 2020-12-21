@@ -1,5 +1,6 @@
 package com.forescout.proto.domainconverter;
 
+import com.forescout.proto.domainconverter.annotations.OneofField;
 import com.forescout.proto.domainconverter.annotations.ProtoClass;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -27,6 +28,17 @@ public class LangModelUtil {
         try {
             //A hack. It always throws the exception, and this is the easiest way to get the TypeMirror of the class
             protoClassAnnotation.protoClass();
+        }
+        catch( MirroredTypeException mte ) {
+            return mte.getTypeMirror();
+        }
+        return null;
+    }
+
+    public TypeMirror getDomainClassFromAnnotation(OneofField oneofFieldAnnotation) {
+        try {
+            //A hack. It always throws the exception, and this is the easiest way to get the TypeMirror of the class
+            oneofFieldAnnotation.domainClass();
         }
         catch( MirroredTypeException mte ) {
             return mte.getTypeMirror();

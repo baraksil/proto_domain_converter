@@ -19,6 +19,16 @@ public class {{converterClass}} {
         {{{closeCheckNotNullCommand}}}
         {{/fieldsData}}
 
+        {{#oneofBaseFieldsData}}
+        if(domain.get{{oneofBaseField}}() == null) {
+        } else
+        {{#oneOfFieldsData}}
+        if(domain.get{{oneofBaseField}}().getClass() == {{oneofImplClass}}.class) {
+            {{{addToBuilderCommand}}};
+        } else
+        {{/oneOfFieldsData}}
+        {}
+        {{/oneofBaseFieldsData}}
         return builder.build();
     }
 
