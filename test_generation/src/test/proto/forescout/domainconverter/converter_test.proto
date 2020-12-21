@@ -23,7 +23,7 @@ message SimpleContainerProto {
 }
 
 message PrimitiveListProto {
-    repeated int32 list_int = 1;
+    repeated int32 int_list = 1;
 }
 
 message ConcretePrimitiveListProto {

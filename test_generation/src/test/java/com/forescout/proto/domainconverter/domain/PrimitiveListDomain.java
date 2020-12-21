@@ -13,5 +13,5 @@ import java.util.List;
 public class PrimitiveListDomain {
 
     @ProtoField
-    private List<Integer> listInt;
+    private List<Integer> intList;
 }

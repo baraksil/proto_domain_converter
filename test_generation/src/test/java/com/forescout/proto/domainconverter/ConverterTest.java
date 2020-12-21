@@ -153,7 +153,7 @@ public class ConverterTest {
         PrimitiveListProto proto = PrimitiveListProto.newBuilder().build();
         PrimitiveListDomain domain = ProtoDomainConverter.toDomain(proto);
         PrimitiveListDomain expected = new PrimitiveListDomain();
-        expected.setListInt(Collections.emptyList());
+        expected.setIntList(Collections.emptyList());
 
         assertEquals(expected, domain);
     }
@@ -387,12 +387,12 @@ public class ConverterTest {
 
     private PrimitiveListDomain createPrimitiveListDomain() {
         PrimitiveListDomain listDomain = new PrimitiveListDomain();
-        listDomain.setListInt(new ArrayList<>(List.of(1, 2, 3)));
+        listDomain.setIntList(new ArrayList<>(List.of(1, 2, 3)));
         return listDomain;
     }
 
     private PrimitiveListProto createPrimitiveListProto() {
-        return PrimitiveListProto.newBuilder().addAllListInt(List.of(1, 2, 3)).build();
+        return PrimitiveListProto.newBuilder().addAllIntList(List.of(1, 2, 3)).build();
     }
 
     private ConcretePrimitiveListDomain createConcretePrimitiveListDomain() {
