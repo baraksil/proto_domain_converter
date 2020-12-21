@@ -5,10 +5,7 @@ import com.forescout.proto.domainconverter.generated.ProtoDomainConverter;
 import com.forescout.proto.domainconverter.test.proto.*;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,12 +22,30 @@ public class ConverterTest {
     }
 
     @Test
+    void testPrimitivesToDomain() {
+        PrimitivesProto proto = createPrimitivesProto();
+        PrimitiveDomain domain = ProtoDomainConverter.toDomain(proto);
+        PrimitiveDomain expected = createPrimitiveDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
     void testEmptyPrimitivesToProto() {
         PrimitiveDomain domain = new PrimitiveDomain();
         PrimitivesProto proto = ProtoDomainConverter.toProto(domain);
         PrimitivesProto expected = PrimitivesProto.newBuilder().build();
 
         assertEquals(expected, proto);
+    }
+
+    @Test
+    void testEmptyPrimitivesToDomain() {
+        PrimitivesProto proto = PrimitivesProto.newBuilder().build();
+        PrimitiveDomain domain = ProtoDomainConverter.toDomain(proto);
+        PrimitiveDomain expected = new PrimitiveDomain();
+
+        assertEquals(expected, domain);
     }
 
     @Test
@@ -43,12 +58,31 @@ public class ConverterTest {
     }
 
     @Test
+    void testStringToDomain() {
+        StringProto proto = createStringProto();
+        StringDomain domain = ProtoDomainConverter.toDomain(proto);
+        StringDomain expected = createStringDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
     void testEmptyStringToProto() {
         StringDomain domain = new StringDomain();
         StringProto proto = ProtoDomainConverter.toProto(domain);
         StringProto expected = StringProto.newBuilder().build();
 
         assertEquals(expected, proto);
+    }
+
+    @Test
+    void testEmptyStringToDomain() {
+        StringProto proto = StringProto.newBuilder().build();
+        StringDomain domain = ProtoDomainConverter.toDomain(proto);
+        StringDomain expected = new StringDomain();
+        expected.setStringValue("");
+
+        assertEquals(expected, domain);
     }
 
     @Test
@@ -61,6 +95,15 @@ public class ConverterTest {
     }
 
     @Test
+    void testSimpleContainerToDomain() {
+        SimpleContainerProto proto = createSimpleContainerProto();
+        SimpleContainerDomain domain = ProtoDomainConverter.toDomain(proto);
+        SimpleContainerDomain expected = createSimpleContainerDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
     void testEmptySimpleContainerToProto() {
         SimpleContainerDomain domain = new SimpleContainerDomain();
         SimpleContainerProto proto = ProtoDomainConverter.toProto(domain);
@@ -69,7 +112,14 @@ public class ConverterTest {
         assertEquals(expected, proto);
     }
 
+    @Test
+    void testEmptySimpleContainerToDomain() {
+        SimpleContainerProto proto = SimpleContainerProto.newBuilder().build();
+        SimpleContainerDomain domain = ProtoDomainConverter.toDomain(proto);
+        SimpleContainerDomain expected = new SimpleContainerDomain();
 
+        assertEquals(expected, domain);
+    }
 
     @Test
     void testPrimitiveListToProto() {
@@ -78,6 +128,15 @@ public class ConverterTest {
         PrimitiveListProto expected = createPrimitiveListProto();
 
         assertEquals(expected, proto);
+    }
+
+    @Test
+    void testPrimitiveListToDomain() {
+        PrimitiveListProto proto = createPrimitiveListProto();
+        PrimitiveListDomain domain = ProtoDomainConverter.toDomain(proto);
+        PrimitiveListDomain expected = createPrimitiveListDomain();
+
+        assertEquals(expected, domain);
     }
 
     @Test
@@ -90,6 +149,16 @@ public class ConverterTest {
     }
 
     @Test
+    void testEmptyPrimitiveListToDomain() {
+        PrimitiveListProto proto = PrimitiveListProto.newBuilder().build();
+        PrimitiveListDomain domain = ProtoDomainConverter.toDomain(proto);
+        PrimitiveListDomain expected = new PrimitiveListDomain();
+        expected.setListInt(Collections.emptyList());
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
     void testStringListToProto() {
         StringListDomain domain = createStringListDomain();
         StringListProto proto = ProtoDomainConverter.toProto(domain);
@@ -99,12 +168,30 @@ public class ConverterTest {
     }
 
     @Test
+    void testStringListToDomain() {
+        StringListProto proto = createStringListProto();
+        StringListDomain domain = ProtoDomainConverter.toDomain(proto);
+        StringListDomain expected = createStringListDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
     void testMessageListToProto() {
         MessageListDomain domain = createMessageListDomain();
         MessageListProto proto = ProtoDomainConverter.toProto(domain);
         MessageListProto expected = createMessageListProto();
 
         assertEquals(expected, proto);
+    }
+
+    @Test
+    void testMessageListToDomain() {
+        MessageListProto proto = createMessageListProto();
+        MessageListDomain domain = ProtoDomainConverter.toDomain(proto);
+        MessageListDomain expected = createMessageListDomain();
+
+        assertEquals(expected, domain);
     }
 
     @Test
@@ -126,12 +213,31 @@ public class ConverterTest {
     }
 
     @Test
+    void testPrimitiveMapToDomain() {
+        PrimitiveMapProto proto = createPrimitiveMapProto();
+        PrimitiveMapDomain domain = ProtoDomainConverter.toDomain(proto);
+        PrimitiveMapDomain expected = createPrimitiveMapDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
     void testEmptyPrimitiveMapToProto() {
         PrimitiveMapDomain domain = new PrimitiveMapDomain();
         PrimitiveMapProto proto = ProtoDomainConverter.toProto(domain);
         PrimitiveMapProto expected = PrimitiveMapProto.newBuilder().build();
 
         assertEquals(expected, proto);
+    }
+
+    @Test
+    void testEmptyPrimitiveMapToDomain() {
+        PrimitiveMapProto proto = PrimitiveMapProto.newBuilder().build();
+        PrimitiveMapDomain domain = ProtoDomainConverter.toDomain(proto);
+        PrimitiveMapDomain expected = new PrimitiveMapDomain();
+        expected.setPrimitiveMap(Collections.emptyMap());
+
+        assertEquals(expected, domain);
     }
 
     @Test

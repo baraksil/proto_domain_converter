@@ -6,11 +6,12 @@ import com.forescout.proto.domainconverter.test.proto.StringListProto;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @ProtoClass(protoClass = StringListProto.class)
 public class StringListDomain {
 
     @ProtoField
-    private ArrayList<String> stringList;
+    private List<String> stringList;
 }

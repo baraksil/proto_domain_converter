@@ -2,6 +2,7 @@ package com.forescout.proto.domainconverter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ConversionData {
     String generator;
@@ -90,6 +91,61 @@ public class ConversionData {
                 case STRING:
                 case OTHER:
                     return "builder.set" + protoFieldMethodSuffix + "(domain.get" + domainFieldMethodSuffix + "())";
+                default:
+                    throw new RuntimeException("Unhandled field type: " + fieldType);
+            }
+        }
+
+        String checkProtoHasValueCommand() {
+            switch (fieldType) {
+                case MESSAGE:
+                    return "if(proto.has" + protoFieldMethodSuffix + "()) {";
+                case PRIMITIVE_LIST:
+                case MESSAGE_LIST:
+                case PRIMITIVE_MAP:
+                case MAP_TO_MESSAGE:
+                case OTHER:
+                case STRING:
+                case BOOLEAN:
+                    return "";
+                default:
+                    throw new RuntimeException("Unhandled field type: " + fieldType);
+            }
+        }
+
+        String closeProtoHasValueCommand() {
+            switch (fieldType) {
+                case MESSAGE:
+                    return "}";
+                case PRIMITIVE_LIST:
+                case MESSAGE_LIST:
+                case PRIMITIVE_MAP:
+                case MAP_TO_MESSAGE:
+                case STRING:
+                case OTHER:
+                case BOOLEAN:
+                    return "";
+                default:
+                    throw new RuntimeException("Unhandled field type: " + fieldType);
+            }
+        }
+
+        String setInDomainCommand() {
+            switch (fieldType) {
+                case BOOLEAN:
+                case STRING:
+                case OTHER:
+                case PRIMITIVE_MAP:
+                    return "domain.set" + domainFieldMethodSuffix + "(proto.get" + protoFieldMethodSuffix + "())";
+                case MESSAGE:
+                    return "domain.set" + domainFieldMethodSuffix + "(toDomain(proto.get" + protoFieldMethodSuffix + "()))";
+                case PRIMITIVE_LIST:
+                    return "domain.set" + domainFieldMethodSuffix + "(proto.get" + protoFieldMethodSuffix + "List())";
+                case MESSAGE_LIST:
+                    return "domain.set" + domainFieldMethodSuffix + "(proto.get" + protoFieldMethodSuffix + "List().stream().map(item -> toDomain(item)).collect(Collectors.toList()))";
+                    //return "domain.setMessageList(proto.getMessageListList().stream().map(item -> toDomain(item)).collect(Collectors.toCollection(ArrayList::new)))";
+                case MAP_TO_MESSAGE:
+                    return "";
                 default:
                     throw new RuntimeException("Unhandled field type: " + fieldType);
             }

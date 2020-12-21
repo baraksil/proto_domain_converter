@@ -1,6 +1,7 @@
 package {{converterPackage}};
 
 import javax.annotation.processing.Generated;
+import java.util.stream.Collectors;
 {{#classesData}}
 import {{domainFullName}};
 import {{protoFullName}};
@@ -19,6 +20,17 @@ public class {{converterClass}} {
         {{/fieldsData}}
 
         return builder.build();
+    }
+
+    static public {{domainClass}} toDomain({{protoClass}} proto) {
+        {{domainClass}} domain = new {{domainClass}}();
+        {{#fieldsData}}
+        {{{checkProtoHasValueCommand}}}
+            {{{setInDomainCommand}}};
+        {{{closeProtoHasValueCommand}}}
+        {{/fieldsData}}
+
+        return domain;
     }
 
     {{/classesData}}
