@@ -26,14 +26,46 @@ public class ConversionData {
     enum FieldType {
         MESSAGE,
         BOOLEAN,
+        STRING,
         PRIMITIVE_LIST,
         MESSAGE_LIST,
         OTHER
     }
+
     static class FieldData {
         FieldType fieldType;
         String protoFieldMethodSuffix;
         String domainFieldMethodSuffix;
+
+        String checkNotNullCommand() {
+            switch (fieldType) {
+                case MESSAGE:
+                case PRIMITIVE_LIST:
+                case MESSAGE_LIST:
+                case STRING:
+                    return "if(domain.get" + domainFieldMethodSuffix + "() != null) {";
+                case OTHER:
+                case BOOLEAN:
+                    return "";
+                default:
+                    throw new RuntimeException("Unhandled field type: " + fieldType);
+            }
+        }
+
+        String closeCheckNotNullCommand() {
+            switch (fieldType) {
+                case MESSAGE:
+                case PRIMITIVE_LIST:
+                case MESSAGE_LIST:
+                case STRING:
+                    return "}";
+                case OTHER:
+                case BOOLEAN:
+                    return "";
+                default:
+                    throw new RuntimeException("Unhandled field type: " + fieldType);
+            }
+        }
 
         String addToBuilderCommand() {
             switch (fieldType) {
@@ -45,6 +77,7 @@ public class ConversionData {
                     return "builder.addAll" + protoFieldMethodSuffix + "(domain.get" + domainFieldMethodSuffix + "())";
                 case MESSAGE_LIST:
                     return "domain.get" + domainFieldMethodSuffix + "().forEach(item -> builder.add" + protoFieldMethodSuffix + "(toProto(item)))";
+                case STRING:
                 case OTHER:
                     return "builder.set" + protoFieldMethodSuffix + "(domain.get" + domainFieldMethodSuffix + "())";
                 default:

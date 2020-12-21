@@ -13,10 +13,13 @@ public class {{converterClass}} {
         {{protoClass}}.Builder builder = {{protoClass}}.newBuilder();
 
         {{#fieldsData}}
-        {{{addToBuilderCommand}}};
+        {{{checkNotNullCommand}}}
+            {{{addToBuilderCommand}}};
+        {{{closeCheckNotNullCommand}}}
         {{/fieldsData}}
 
         return builder.build();
     }
     {{/classesData}}
+
 }

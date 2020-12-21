@@ -132,6 +132,10 @@ public class ConverterGenerator extends AbstractProcessor {
             return ConversionData.FieldType.BOOLEAN;
         }
 
+        if(langModelUtil.isSameType(fieldType, String.class)) {
+            return ConversionData.FieldType.STRING;
+        }
+
         if(isProtoMessage(fieldType)) {
             return ConversionData.FieldType.MESSAGE;
         }

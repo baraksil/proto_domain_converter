@@ -23,10 +23,28 @@ public class ConverterTest {
     }
 
     @Test
+    void testEmptyPrimitivesToProto() {
+        PrimitiveDomain domain = new PrimitiveDomain();
+        PrimitivesProto proto = ProtoDomainConverter.toProto(domain);
+        PrimitivesProto expected = PrimitivesProto.newBuilder().build();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
     void testStringToProto() {
         StringDomain domain = createStringDomain();
         StringProto proto = ProtoDomainConverter.toProto(domain);
         StringProto expected = createStringProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testEmptyStringToProto() {
+        StringDomain domain = new StringDomain();
+        StringProto proto = ProtoDomainConverter.toProto(domain);
+        StringProto expected = StringProto.newBuilder().build();
 
         assertEquals(expected, proto);
     }
@@ -41,6 +59,17 @@ public class ConverterTest {
     }
 
     @Test
+    void testEmptySimpleContainerToProto() {
+        SimpleContainerDomain domain = new SimpleContainerDomain();
+        SimpleContainerProto proto = ProtoDomainConverter.toProto(domain);
+        SimpleContainerProto expected = SimpleContainerProto.newBuilder().build();
+
+        assertEquals(expected, proto);
+    }
+
+
+
+    @Test
     void testPrimitiveListToProto() {
         PrimitiveListDomain domain = createPrimitiveListDomain();
         PrimitiveListProto proto = ProtoDomainConverter.toProto(domain);
@@ -50,10 +79,28 @@ public class ConverterTest {
     }
 
     @Test
+    void testEmptyPrimitiveListToProto() {
+        PrimitiveListDomain domain = new PrimitiveListDomain();
+        PrimitiveListProto proto = ProtoDomainConverter.toProto(domain);
+        PrimitiveListProto expected = PrimitiveListProto.newBuilder().build();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
     void testMessageListToProto() {
         MessageListDomain domain = createMessageListDomain();
         MessageListProto proto = ProtoDomainConverter.toProto(domain);
         MessageListProto expected = createMessageListProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testEmptyMessageListToProto() {
+        MessageListDomain domain = new MessageListDomain();
+        MessageListProto proto = ProtoDomainConverter.toProto(domain);
+        MessageListProto expected = MessageListProto.newBuilder().build();
 
         assertEquals(expected, proto);
     }

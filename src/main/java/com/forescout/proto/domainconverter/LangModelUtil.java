@@ -32,12 +32,18 @@ public class LangModelUtil {
         return null;
     }
 
-    public boolean isList(TypeMirror fieldType) {
+    public boolean isList(TypeMirror typeMirror) {
         TypeElement listTypeElement = processingEnv.getElementUtils().getTypeElement("java.util.List");
         Types typeUtil = processingEnv.getTypeUtils();
         DeclaredType listType = typeUtil.getDeclaredType(listTypeElement, typeUtil.getWildcardType(null, null));
 
-        return processingEnv.getTypeUtils().isAssignable(fieldType, listType);
+        return typeUtil.isAssignable(typeMirror, listType);
+    }
+
+    public boolean isSameType(TypeMirror typeMirror, Class<?> clazz) {
+        TypeElement otherTypeElement = processingEnv.getElementUtils().getTypeElement(clazz.getName());
+        Types typeUtil = processingEnv.getTypeUtils();
+        return typeUtil.isSameType(typeMirror, otherTypeElement.asType());
     }
 
     public <A extends Annotation> A getAnnotation(TypeMirror typeMirror, Class<A> annotationClass) {
