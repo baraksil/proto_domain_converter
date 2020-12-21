@@ -149,6 +149,10 @@ public class ConverterGenerator extends AbstractProcessor {
             }
         }
 
+        if(langModelUtil.isMap(fieldType)) {
+            return ConversionData.FieldType.PRIMITIVE_MAP;
+        }
+
         return ConversionData.FieldType.OTHER;
     }
 

@@ -26,6 +26,14 @@ message PrimitiveListProto {
     repeated int32 listInt = 1;
 }
 
+message StringListProto {
+    repeated string stringList = 1;
+}
+
 message MessageListProto {
     repeated PrimitivesProto messageList = 1;
+}
+
+message PrimitiveMapProto {
+    map<int32, int64> primitiveMap = 1;
 }

@@ -6,7 +6,9 @@ import com.forescout.proto.domainconverter.test.proto.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -88,6 +90,15 @@ public class ConverterTest {
     }
 
     @Test
+    void testStringListToProto() {
+        StringListDomain domain = createStringListDomain();
+        StringListProto proto = ProtoDomainConverter.toProto(domain);
+        StringListProto expected = createStringListProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
     void testMessageListToProto() {
         MessageListDomain domain = createMessageListDomain();
         MessageListProto proto = ProtoDomainConverter.toProto(domain);
@@ -103,6 +114,37 @@ public class ConverterTest {
         MessageListProto expected = MessageListProto.newBuilder().build();
 
         assertEquals(expected, proto);
+    }
+
+    @Test
+    void testPrimitiveMapToProto() {
+        PrimitiveMapDomain domain = createPrimitiveMapDomain();
+        PrimitiveMapProto proto = ProtoDomainConverter.toProto(domain);
+        PrimitiveMapProto expected = createPrimitiveMapProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testEmptyPrimitiveMapToProto() {
+        PrimitiveMapDomain domain = new PrimitiveMapDomain();
+        PrimitiveMapProto proto = ProtoDomainConverter.toProto(domain);
+        PrimitiveMapProto expected = PrimitiveMapProto.newBuilder().build();
+
+        assertEquals(expected, proto);
+    }
+
+    private PrimitiveMapDomain createPrimitiveMapDomain() {
+        PrimitiveMapDomain domain = new PrimitiveMapDomain();
+        domain.setPrimitiveMap(Map.of(1, 2L, 3, 4L));
+        return domain;
+    }
+
+    private PrimitiveMapProto createPrimitiveMapProto() {
+        return PrimitiveMapProto.newBuilder()
+                .putPrimitiveMap(1, 2)
+                .putPrimitiveMap(3, 4)
+                .build();
     }
 
     private PrimitiveDomain createPrimitiveDomain() {
@@ -157,6 +199,16 @@ public class ConverterTest {
 
     private PrimitiveListProto createPrimitiveListProto() {
         return PrimitiveListProto.newBuilder().addAllListInt(List.of(1, 2, 3)).build();
+    }
+
+    private StringListDomain createStringListDomain() {
+        StringListDomain listDomain = new StringListDomain();
+        listDomain.setStringList(new ArrayList<>(List.of("aa", "bb", "cc")));
+        return listDomain;
+    }
+
+    private StringListProto createStringListProto() {
+        return StringListProto.newBuilder().addAllStringList(List.of("aa", "bb", "cc")).build();
     }
 
     private MessageListDomain createMessageListDomain() {

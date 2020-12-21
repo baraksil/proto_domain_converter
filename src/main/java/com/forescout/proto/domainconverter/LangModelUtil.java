@@ -40,6 +40,16 @@ public class LangModelUtil {
         return typeUtil.isAssignable(typeMirror, listType);
     }
 
+    public boolean isMap(TypeMirror typeMirror) {
+        TypeElement mapTypeElement = processingEnv.getElementUtils().getTypeElement("java.util.Map");
+        Types typeUtil = processingEnv.getTypeUtils();
+        DeclaredType mapType = typeUtil.getDeclaredType(mapTypeElement,
+                typeUtil.getWildcardType(null, null),
+                typeUtil.getWildcardType(null, null));
+
+        return typeUtil.isAssignable(typeMirror, mapType);
+    }
+
     public boolean isSameType(TypeMirror typeMirror, Class<?> clazz) {
         TypeElement otherTypeElement = processingEnv.getElementUtils().getTypeElement(clazz.getName());
         Types typeUtil = processingEnv.getTypeUtils();
