@@ -18,6 +18,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
@@ -125,9 +126,10 @@ public class ConverterGenerator extends AbstractProcessor {
 
         OneofBaseFieldData oneofBaseFieldData = new OneofBaseFieldData();
         info("oneofBaseAnnotation: " + oneofBaseAnnotation + " oneofBaseAnnotation.oneofName: " + oneofBaseAnnotation.oneofName());
-        oneofBaseFieldData.oneofBaseField = oneofBaseAnnotation.oneofName().equals("") ?
+        oneofBaseFieldData.oneofProtoName = oneofBaseAnnotation.oneofName().equals("") ?
                 StringUtils.capitalize(field.getSimpleName().toString()) :
-                StringUtils.lowerUnderscoreToPascalCase(oneofBaseAnnotation.oneofName());
+                StringUtils.snakeCaseToPascalCase(oneofBaseAnnotation.oneofName());
+        oneofBaseFieldData.oneofBaseField = StringUtils.capitalize(field.getSimpleName().toString());
 
         for(OneofField oneofFieldAnnotation : oneofBaseAnnotation.oneOfFields()) {
             OneofFieldData oneofFieldData = createOneofFieldData(field, oneofFieldAnnotation);
@@ -140,10 +142,13 @@ public class ConverterGenerator extends AbstractProcessor {
     private OneofFieldData createOneofFieldData(VariableElement field, OneofField oneofFieldAnnotation) {
         OneofFieldData oneofFieldData = new OneofFieldData();
 
+        oneofFieldData.oneofFieldCase = oneofFieldAnnotation.protoField().toUpperCase();
         oneofFieldData.domainBaseField = StringUtils.capitalize(field.getSimpleName().toString());
         oneofFieldData.oneOfDomainField = StringUtils.capitalize(oneofFieldAnnotation.domainField());
-        oneofFieldData.oneOfProtoField = StringUtils.lowerUnderscoreToPascalCase(oneofFieldAnnotation.protoField());
-        oneofFieldData.oneofImplClass = langModelUtil.getDomainClassFromAnnotation(oneofFieldAnnotation).toString();
+        oneofFieldData.oneOfProtoField = StringUtils.snakeCaseToPascalCase(oneofFieldAnnotation.protoField());
+        TypeMirror domainType = langModelUtil.getDomainClassFromAnnotation(oneofFieldAnnotation);
+        oneofFieldData.oneofImplClass = domainType.toString();
+        oneofFieldData.oneofImplClassSimple = ((DeclaredType)domainType).asElement().getSimpleName().toString();
         oneofFieldData.fieldIsMessage = isProtoMessage(processingEnv.getElementUtils().getTypeElement(oneofFieldData.oneofImplClass).asType());
 
 
@@ -237,7 +242,7 @@ public class ConverterGenerator extends AbstractProcessor {
     private String getProtoFieldMethodSuffix(VariableElement field, ProtoField protoFieldAnnotation) {
         return  protoFieldAnnotation.protoName().equals("") ?
                 StringUtils.capitalize(field.getSimpleName().toString()):
-                StringUtils.lowerUnderscoreToPascalCase(protoFieldAnnotation.protoName());
+                StringUtils.snakeCaseToPascalCase(protoFieldAnnotation.protoName());
     }
 
     private List<Element> getDomainFields(final TypeElement domainElement, boolean withInheritedFields) {

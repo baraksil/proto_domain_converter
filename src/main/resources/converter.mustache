@@ -5,6 +5,11 @@ import java.util.stream.Collectors;
 {{#classesData}}
 import {{domainFullName}};
 import {{protoFullName}};
+    {{#oneofBaseFieldsData}}
+        {{#oneOfFieldsData}}
+import {{oneofImplClass}};
+        {{/oneOfFieldsData}}
+    {{/oneofBaseFieldsData}}
 {{/classesData}}
 
 @Generated(value = "{{generator}}")
@@ -28,17 +33,32 @@ public class {{converterClass}} {
         } else
         {{/oneOfFieldsData}}
         {}
+
         {{/oneofBaseFieldsData}}
         return builder.build();
     }
 
     static public {{domainClass}} toDomain({{protoClass}} proto) {
         {{domainClass}} domain = new {{domainClass}}();
-        {{#fieldsData}}
+
+    {{#fieldsData}}
         {{{checkProtoHasValueCommand}}}
-            {{{setInDomainCommand}}};
+        {{{setInDomainCommand}}};
         {{{closeProtoHasValueCommand}}}
-        {{/fieldsData}}
+    {{/fieldsData}}
+
+    {{#oneofBaseFieldsData}}
+        switch (proto.get{{oneofProtoName}}Case()) {
+        {{#oneOfFieldsData}}
+            case {{oneofFieldCase}}:
+                {{oneofImplClassSimple}} {{oneofImplVariable}} = {{oneofImplCreation}};
+                {{setValueToVariable}};
+                domain.set{{oneofBaseField}}({{oneofImplVariable}});
+            break;
+        {{/oneOfFieldsData}}
+        }
+
+    {{/oneofBaseFieldsData}}
 
         return domain;
     }

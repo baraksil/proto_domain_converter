@@ -314,7 +314,7 @@ public class ConverterTest {
         assertEquals(expected, proto);
     }
 
-    //@Test
+    @Test
     void testOneofWithInheritanceToDomain() {
         OneofWithInheritanceProto proto = createOneofWithInheritanceProto();
         OneofWithInheritanceDomain domain = ProtoDomainConverter.toDomain(proto);
