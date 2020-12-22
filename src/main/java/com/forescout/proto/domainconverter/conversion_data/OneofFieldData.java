@@ -36,6 +36,6 @@ public class OneofFieldData {
             return "";
         }
 
-        return oneofImplVariable() + ".set" + oneOfDomainField + "(proto.get" + oneOfProtoField + "())";
+        return oneofImplVariable() + ".set" + oneOfDomainField + "(proto.get" + oneOfProtoField + "());";
     }
 }

@@ -125,7 +125,6 @@ public class ConverterGenerator extends AbstractProcessor {
         }
 
         OneofBaseFieldData oneofBaseFieldData = new OneofBaseFieldData();
-        info("oneofBaseAnnotation: " + oneofBaseAnnotation + " oneofBaseAnnotation.oneofName: " + oneofBaseAnnotation.oneofName());
         oneofBaseFieldData.oneofProtoName = oneofBaseAnnotation.oneofName().equals("") ?
                 StringUtils.capitalize(field.getSimpleName().toString()) :
                 StringUtils.snakeCaseToPascalCase(oneofBaseAnnotation.oneofName());
