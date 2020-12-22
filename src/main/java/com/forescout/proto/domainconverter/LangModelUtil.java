@@ -5,10 +5,7 @@ import com.forescout.proto.domainconverter.annotations.ProtoClass;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.*;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.MirroredTypeException;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.*;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import java.lang.annotation.Annotation;
@@ -79,6 +76,13 @@ public class LangModelUtil {
         TypeElement otherTypeElement = processingEnv.getElementUtils().getTypeElement(clazz.getName());
         Types typeUtil = processingEnv.getTypeUtils();
         return typeUtil.isSameType(typeMirror, otherTypeElement.asType());
+    }
+
+    public boolean isByteArray(TypeMirror typeMirror) {
+        if (typeMirror.getKind() == TypeKind.ARRAY) {
+            return ((ArrayType)typeMirror).getComponentType().getKind().equals(TypeKind.BYTE);
+        }
+        return false;
     }
 
     public <A extends Annotation> A getAnnotation(TypeMirror typeMirror, Class<A> annotationClass) {

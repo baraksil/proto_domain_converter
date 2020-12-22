@@ -5,6 +5,7 @@ import com.forescout.proto.domainconverter.domain.oneof.OneofIntImplDomain;
 import com.forescout.proto.domainconverter.domain.oneof.OneofWithInheritanceDomain;
 import com.forescout.proto.domainconverter.generated.ProtoDomainConverter;
 import com.forescout.proto.domainconverter.test.proto.*;
+import com.google.protobuf.ByteString;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -73,6 +74,33 @@ public class ConverterTest {
         StringDomain domain = new StringDomain();
         StringProto proto = ProtoDomainConverter.toProto(domain);
         StringProto expected = StringProto.newBuilder().build();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testBytesToProto() {
+        BytesDomain domain = createBytesDomain();
+        BytesProto proto = ProtoDomainConverter.toProto(domain);
+        BytesProto expected = createBytesProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testBytesToDomain() {
+        BytesProto proto = createBytesProto();
+        BytesDomain domain = ProtoDomainConverter.toDomain(proto);
+        BytesDomain expected = createBytesDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
+    void testEmptyBytesToProto() {
+        BytesDomain domain = new BytesDomain();
+        BytesProto proto = ProtoDomainConverter.toProto(domain);
+        BytesProto expected = BytesProto.newBuilder().build();
 
         assertEquals(expected, proto);
     }
@@ -321,6 +349,16 @@ public class ConverterTest {
         OneofWithInheritanceDomain expected = createOneofWithInheritanceDomain();
 
         assertEquals(expected, domain);
+    }
+
+    private BytesDomain createBytesDomain() {
+        BytesDomain domain = new BytesDomain();
+        domain.setBytesValue(new byte[]{0x1b, 0x2b});
+        return domain;
+    }
+
+    private BytesProto createBytesProto() {
+        return BytesProto.newBuilder().setBytesValue(ByteString.copyFrom(new byte[]{0x1b, 0x2b})).build();
     }
 
     private OneofWithInheritanceDomain createOneofWithInheritanceDomain() {

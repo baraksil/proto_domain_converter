@@ -28,6 +28,7 @@ public class ConversionData {
         MESSAGE,
         BOOLEAN,
         STRING,
+        BYTES,
         PRIMITIVE_LIST,
         MESSAGE_LIST,
         PRIMITIVE_MAP,

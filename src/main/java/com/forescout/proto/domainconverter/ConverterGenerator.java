@@ -11,6 +11,7 @@ import com.forescout.proto.domainconverter.conversion_data.OneofFieldData;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
+import com.google.protobuf.ByteString;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -203,6 +204,10 @@ public class ConverterGenerator extends AbstractProcessor {
 
         if(langModelUtil.isSameType(fieldType, String.class)) {
             return ConversionData.FieldType.STRING;
+        }
+
+        if(langModelUtil.isByteArray(fieldType)) {
+            return ConversionData.FieldType.BYTES;
         }
 
         if(isProtoMessage(fieldType)) {

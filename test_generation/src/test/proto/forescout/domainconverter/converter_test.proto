@@ -18,6 +18,10 @@ message StringProto {
     string string_value = 6;
 }
 
+message BytesProto {
+    bytes bytes_value = 1;
+}
+
 message SimpleContainerProto {
   PrimitivesProto primitives = 2;
 }
