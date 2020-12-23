@@ -11,6 +11,10 @@ import java.util.List;
 
 public class BenchmarkRunner {
 
+    private final int ITERATIONS = 20;
+    private final int WARMUPS = 3;
+    private final int INTERNAL_OPERATIONS = 50000;
+
     public static void main(String[] args) throws IOException {
         BenchmarkRunner runner = new BenchmarkRunner();
         System.out.println("Serialize:");
@@ -28,8 +32,8 @@ public class BenchmarkRunner {
 
     void serializeProto() {
         AllInOneProto allInOneProto = TestItemsCreator.createAllInOneProto();
-        benchmarkRun(3, 10, () -> {
-            for(int i=0; i<10000; i++) {
+        benchmarkRun(() -> {
+            for(int i=0; i<INTERNAL_OPERATIONS; i++) {
                 allInOneProto.toByteArray();
             }
         });
@@ -37,8 +41,8 @@ public class BenchmarkRunner {
     void mapToProto() {
         AllInOneDomain allInOneDomain = TestItemsCreator.createAllInOneDomain();
 
-        benchmarkRun(1, 10, () -> {
-            for(int i=0; i<10000; i++) {
+        benchmarkRun(() -> {
+            for(int i=0; i<INTERNAL_OPERATIONS; i++) {
                 ProtoDomainConverter.toProto(allInOneDomain);
             }
         });
@@ -47,8 +51,8 @@ public class BenchmarkRunner {
     void deserializeProto() {
         AllInOneProto allInOneProto = TestItemsCreator.createAllInOneProto();
         byte[] bytes = allInOneProto.toByteArray();
-        benchmarkRun(3, 10, () -> {
-            for(int i=0; i<10000; i++) {
+        benchmarkRun(() -> {
+            for(int i=0; i<INTERNAL_OPERATIONS; i++) {
                 try {
                     AllInOneProto.parseFrom(bytes);
                 } catch (InvalidProtocolBufferException e) {
@@ -61,11 +65,15 @@ public class BenchmarkRunner {
     void mapToDomain() {
         AllInOneProto allInOneProto = TestItemsCreator.createAllInOneProto();
 
-        benchmarkRun(1, 10, () -> {
-            for(int i=0; i<10000; i++) {
+        benchmarkRun(() -> {
+            for(int i=0; i<INTERNAL_OPERATIONS; i++) {
                 ProtoDomainConverter.toDomain(allInOneProto);
             }
         });
+    }
+
+    private void benchmarkRun(Runnable runnable) {
+        benchmarkRun(WARMUPS, ITERATIONS, runnable);
     }
     private void benchmarkRun(int warmUps, int iterations, Runnable runnable) {
         for(int i=0; i<warmUps; i++) {
