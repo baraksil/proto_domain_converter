@@ -17,18 +17,18 @@ public class ConverterTest {
 
     @Test
     void testPrimitivesToProto() {
-        PrimitiveDomain domain = createPrimitiveDomain();
+        PrimitiveDomain domain = TestItemsCreator.createPrimitiveDomain();
         PrimitivesProto proto = ProtoDomainConverter.toProto(domain);
-        PrimitivesProto expected = createPrimitivesProto();
+        PrimitivesProto expected = TestItemsCreator.createPrimitivesProto();
 
         assertEquals(expected, proto);
     }
 
     @Test
     void testPrimitivesToDomain() {
-        PrimitivesProto proto = createPrimitivesProto();
+        PrimitivesProto proto = TestItemsCreator.createPrimitivesProto();
         PrimitiveDomain domain = ProtoDomainConverter.toDomain(proto);
-        PrimitiveDomain expected = createPrimitiveDomain();
+        PrimitiveDomain expected = TestItemsCreator.createPrimitiveDomain();
 
         assertEquals(expected, domain);
     }
@@ -53,18 +53,18 @@ public class ConverterTest {
 
     @Test
     void testStringToProto() {
-        StringDomain domain = createStringDomain();
+        StringDomain domain = TestItemsCreator.createStringDomain();
         StringProto proto = ProtoDomainConverter.toProto(domain);
-        StringProto expected = createStringProto();
+        StringProto expected = TestItemsCreator.createStringProto();
 
         assertEquals(expected, proto);
     }
 
     @Test
     void testStringToDomain() {
-        StringProto proto = createStringProto();
+        StringProto proto = TestItemsCreator.createStringProto();
         StringDomain domain = ProtoDomainConverter.toDomain(proto);
-        StringDomain expected = createStringDomain();
+        StringDomain expected = TestItemsCreator.createStringDomain();
 
         assertEquals(expected, domain);
     }
@@ -80,18 +80,18 @@ public class ConverterTest {
 
     @Test
     void testBytesToProto() {
-        BytesDomain domain = createBytesDomain();
+        BytesDomain domain = TestItemsCreator.createBytesDomain();
         BytesProto proto = ProtoDomainConverter.toProto(domain);
-        BytesProto expected = createBytesProto();
+        BytesProto expected = TestItemsCreator.createBytesProto();
 
         assertEquals(expected, proto);
     }
 
     @Test
     void testBytesToDomain() {
-        BytesProto proto = createBytesProto();
+        BytesProto proto = TestItemsCreator.createBytesProto();
         BytesDomain domain = ProtoDomainConverter.toDomain(proto);
-        BytesDomain expected = createBytesDomain();
+        BytesDomain expected = TestItemsCreator.createBytesDomain();
 
         assertEquals(expected, domain);
     }
@@ -117,18 +117,18 @@ public class ConverterTest {
 
     @Test
     void testSimpleContainerToProto() {
-        SimpleContainerDomain domain = createSimpleContainerDomain();
+        SimpleContainerDomain domain = TestItemsCreator.createSimpleContainerDomain();
         SimpleContainerProto proto = ProtoDomainConverter.toProto(domain);
-        SimpleContainerProto expected = createSimpleContainerProto();
+        SimpleContainerProto expected = TestItemsCreator.createSimpleContainerProto();
 
         assertEquals(expected, proto);
     }
 
     @Test
     void testSimpleContainerToDomain() {
-        SimpleContainerProto proto = createSimpleContainerProto();
+        SimpleContainerProto proto = TestItemsCreator.createSimpleContainerProto();
         SimpleContainerDomain domain = ProtoDomainConverter.toDomain(proto);
-        SimpleContainerDomain expected = createSimpleContainerDomain();
+        SimpleContainerDomain expected = TestItemsCreator.createSimpleContainerDomain();
 
         assertEquals(expected, domain);
     }
@@ -153,18 +153,18 @@ public class ConverterTest {
 
     @Test
     void testPrimitiveListToProto() {
-        PrimitiveListDomain domain = createPrimitiveListDomain();
+        PrimitiveListDomain domain = TestItemsCreator.createPrimitiveListDomain();
         PrimitiveListProto proto = ProtoDomainConverter.toProto(domain);
-        PrimitiveListProto expected = createPrimitiveListProto();
+        PrimitiveListProto expected = TestItemsCreator.createPrimitiveListProto();
 
         assertEquals(expected, proto);
     }
 
     @Test
     void testPrimitiveListToDomain() {
-        PrimitiveListProto proto = createPrimitiveListProto();
+        PrimitiveListProto proto = TestItemsCreator.createPrimitiveListProto();
         PrimitiveListDomain domain = ProtoDomainConverter.toDomain(proto);
-        PrimitiveListDomain expected = createPrimitiveListDomain();
+        PrimitiveListDomain expected = TestItemsCreator.createPrimitiveListDomain();
 
         assertEquals(expected, domain);
     }
@@ -190,45 +190,45 @@ public class ConverterTest {
 
     @Test
     void testPrimitiveConcreteListToDomain() {
-        ConcretePrimitiveListProto proto = createConcretePrimitiveListProto();
+        ConcretePrimitiveListProto proto = TestItemsCreator.createConcretePrimitiveListProto();
         ConcretePrimitiveListDomain domain = ProtoDomainConverter.toDomain(proto);
-        ConcretePrimitiveListDomain expected = createConcretePrimitiveListDomain();
+        ConcretePrimitiveListDomain expected = TestItemsCreator.createConcretePrimitiveListDomain();
 
         assertEquals(expected, domain);
     }
 
     @Test
     void testStringListToProto() {
-        StringListDomain domain = createStringListDomain();
+        StringListDomain domain = TestItemsCreator.createStringListDomain();
         StringListProto proto = ProtoDomainConverter.toProto(domain);
-        StringListProto expected = createStringListProto();
+        StringListProto expected = TestItemsCreator.createStringListProto();
 
         assertEquals(expected, proto);
     }
 
     @Test
     void testStringListToDomain() {
-        StringListProto proto = createStringListProto();
+        StringListProto proto = TestItemsCreator.createStringListProto();
         StringListDomain domain = ProtoDomainConverter.toDomain(proto);
-        StringListDomain expected = createStringListDomain();
+        StringListDomain expected = TestItemsCreator.createStringListDomain();
 
         assertEquals(expected, domain);
     }
 
     @Test
     void testMessageListToProto() {
-        MessageListDomain domain = createMessageListDomain();
+        MessageListDomain domain = TestItemsCreator.createMessageListDomain();
         MessageListProto proto = ProtoDomainConverter.toProto(domain);
-        MessageListProto expected = createMessageListProto();
+        MessageListProto expected = TestItemsCreator.createMessageListProto();
 
         assertEquals(expected, proto);
     }
 
     @Test
     void testMessageListToDomain() {
-        MessageListProto proto = createMessageListProto();
+        MessageListProto proto = TestItemsCreator.createMessageListProto();
         MessageListDomain domain = ProtoDomainConverter.toDomain(proto);
-        MessageListDomain expected = createMessageListDomain();
+        MessageListDomain expected = TestItemsCreator.createMessageListDomain();
 
         assertEquals(expected, domain);
     }
@@ -244,27 +244,27 @@ public class ConverterTest {
 
     @Test
     void testConcreteMessageListToDomain() {
-        ConcreteMessageListProto proto = createConcreteMessageListProto();
+        ConcreteMessageListProto proto = TestItemsCreator.createConcreteMessageListProto();
         ConcreteMessageListDomain domain = ProtoDomainConverter.toDomain(proto);
-        ConcreteMessageListDomain expected = createConcreteMessageListDomain();
+        ConcreteMessageListDomain expected = TestItemsCreator.createConcreteMessageListDomain();
 
         assertEquals(expected, domain);
     }
 
     @Test
     void testPrimitiveMapToProto() {
-        PrimitiveMapDomain domain = createPrimitiveMapDomain();
+        PrimitiveMapDomain domain = TestItemsCreator.createPrimitiveMapDomain();
         PrimitiveMapProto proto = ProtoDomainConverter.toProto(domain);
-        PrimitiveMapProto expected = createPrimitiveMapProto();
+        PrimitiveMapProto expected = TestItemsCreator.createPrimitiveMapProto();
 
         assertEquals(expected, proto);
     }
 
     @Test
     void testPrimitiveMapToDomain() {
-        PrimitiveMapProto proto = createPrimitiveMapProto();
+        PrimitiveMapProto proto = TestItemsCreator.createPrimitiveMapProto();
         PrimitiveMapDomain domain = ProtoDomainConverter.toDomain(proto);
-        PrimitiveMapDomain expected = createPrimitiveMapDomain();
+        PrimitiveMapDomain expected = TestItemsCreator.createPrimitiveMapDomain();
 
         assertEquals(expected, domain);
     }
@@ -290,256 +290,74 @@ public class ConverterTest {
 
     @Test
     void testConcretePrimitiveMapToDomain() {
-        ConcretePrimitiveMapProto proto = createConcretePrimitiveMapProto();
+        ConcretePrimitiveMapProto proto = TestItemsCreator.createConcretePrimitiveMapProto();
         ConcretePrimitiveMapDomain domain = ProtoDomainConverter.toDomain(proto);
-        ConcretePrimitiveMapDomain expected = createConcretePrimitiveMapDomain();
+        ConcretePrimitiveMapDomain expected = TestItemsCreator.createConcretePrimitiveMapDomain();
 
         assertEquals(expected, domain);
     }
 
     @Test
     void testMapToMessageToProto() {
-        MapToMessageDomain domain = createMapToMessageDomain();
+        MapToMessageDomain domain = TestItemsCreator.createMapToMessageDomain();
         MapToMessageProto proto = ProtoDomainConverter.toProto(domain);
-        MapToMessageProto expected = createMapToMessageProto();
+        MapToMessageProto expected = TestItemsCreator.createMapToMessageProto();
 
         assertEquals(expected, proto);
     }
 
     @Test
     void testConcreteMapToMessageToDomain() {
-        ConcreteMapToMessageProto proto = createConcreteMapToMessageProto();
+        ConcreteMapToMessageProto proto = TestItemsCreator.createConcreteMapToMessageProto();
         ConcreteMapToMessageDomain domain = ProtoDomainConverter.toDomain(proto);
-        ConcreteMapToMessageDomain expected = createConcreteMapToMessageDomain();
+        ConcreteMapToMessageDomain expected = TestItemsCreator.createConcreteMapToMessageDomain();
 
         assertEquals(expected, domain);
     }
 
     @Test
     void testOneofWithoutInheritanceToProto() {
-        OneofWithoutInheritanceDomain domain = createOneofWithoutInheritanceDomain();
+        OneofWithoutInheritanceDomain domain = TestItemsCreator.createOneofWithoutInheritanceDomain();
         OneofWithoutInheritanceProto proto = ProtoDomainConverter.toProto(domain);
-        OneofWithoutInheritanceProto expected = createOneofWithoutInheritanceProto();
+        OneofWithoutInheritanceProto expected = TestItemsCreator.createOneofWithoutInheritanceProto();
 
         assertEquals(expected, proto);
     }
 
     @Test
     void testOneofWithoutInheritanceToDomain() {
-        OneofWithoutInheritanceProto proto = createOneofWithoutInheritanceProto();
+        OneofWithoutInheritanceProto proto = TestItemsCreator.createOneofWithoutInheritanceProto();
         OneofWithoutInheritanceDomain domain = ProtoDomainConverter.toDomain(proto);
-        OneofWithoutInheritanceDomain expected = createOneofWithoutInheritanceDomain();
+        OneofWithoutInheritanceDomain expected = TestItemsCreator.createOneofWithoutInheritanceDomain();
 
         assertEquals(expected, domain);
     }
 
     @Test
     void testOneofWithInheritanceToProto() {
-        OneofWithInheritanceDomain domain = createOneofWithInheritanceDomain();
+        OneofWithInheritanceDomain domain = TestItemsCreator.createOneofWithInheritanceDomain();
         OneofWithInheritanceProto proto = ProtoDomainConverter.toProto(domain);
-        OneofWithInheritanceProto expected = createOneofWithInheritanceProto();
+        OneofWithInheritanceProto expected = TestItemsCreator.createOneofWithInheritanceProto();
 
         assertEquals(expected, proto);
     }
 
     @Test
     void testOneofWithInheritanceToDomain() {
-        OneofWithInheritanceProto proto = createOneofWithInheritanceProto();
+        OneofWithInheritanceProto proto = TestItemsCreator.createOneofWithInheritanceProto();
         OneofWithInheritanceDomain domain = ProtoDomainConverter.toDomain(proto);
-        OneofWithInheritanceDomain expected = createOneofWithInheritanceDomain();
+        OneofWithInheritanceDomain expected = TestItemsCreator.createOneofWithInheritanceDomain();
 
         assertEquals(expected, domain);
     }
 
-    private BytesDomain createBytesDomain() {
-        BytesDomain domain = new BytesDomain();
-        domain.setBytesValue(new byte[]{0x1b, 0x2b});
-        return domain;
+    @Test
+    void testAllInOneToProto() {
+        AllInOneDomain domain = TestItemsCreator.createAllInOneDomain();
+        AllInOneProto proto = ProtoDomainConverter.toProto(domain);
+        AllInOneProto expected = TestItemsCreator.createAllInOneProto();
+
+        assertEquals(expected, proto);
     }
 
-    private BytesProto createBytesProto() {
-        return BytesProto.newBuilder().setBytesValue(ByteString.copyFrom(new byte[]{0x1b, 0x2b})).build();
-    }
-
-    private OneofWithInheritanceDomain createOneofWithInheritanceDomain() {
-        OneofWithInheritanceDomain domain = new OneofWithInheritanceDomain();
-        OneofIntImplDomain oneofIntImplDomain = new OneofIntImplDomain();
-        oneofIntImplDomain.setIntVal(3);
-        domain.setValue(oneofIntImplDomain);
-        return domain;
-    }
-
-    private OneofWithInheritanceProto createOneofWithInheritanceProto() {
-        return OneofWithInheritanceProto.newBuilder()
-                .setIntVal(3)
-                .build();
-    }
-
-    private OneofWithoutInheritanceDomain createOneofWithoutInheritanceDomain() {
-        OneofWithoutInheritanceDomain domain = new OneofWithoutInheritanceDomain();
-        domain.setIntVal(3);
-        return domain;
-    }
-
-    private OneofWithoutInheritanceProto createOneofWithoutInheritanceProto() {
-        return OneofWithoutInheritanceProto.newBuilder()
-                .setIntVal(3)
-                .build();
-    }
-
-    private ConcreteMapToMessageDomain createConcreteMapToMessageDomain() {
-        ConcreteMapToMessageDomain domain = new ConcreteMapToMessageDomain();
-        domain.setMapToMessage(Map.of(
-                "aa", createPrimitiveDomain(),
-                "bb", createPrimitiveDomain()));
-        return domain;
-    }
-
-    private ConcreteMapToMessageProto createConcreteMapToMessageProto() {
-        return ConcreteMapToMessageProto.newBuilder()
-                .putMapToMessage("aa", createPrimitivesProto())
-                .putMapToMessage("bb", createPrimitivesProto())
-                .build();
-    }
-
-    private ConcretePrimitiveMapDomain createConcretePrimitiveMapDomain() {
-        ConcretePrimitiveMapDomain domain = new ConcretePrimitiveMapDomain();
-        domain.setPrimitiveMap(Map.of(1, 2L, 3, 4L));
-        return domain;
-    }
-
-    private ConcretePrimitiveMapProto createConcretePrimitiveMapProto() {
-        return ConcretePrimitiveMapProto.newBuilder()
-                .putPrimitiveMap(1, 2)
-                .putPrimitiveMap(3, 4)
-                .build();
-    }
-
-    private MapToMessageDomain createMapToMessageDomain() {
-        MapToMessageDomain domain = new MapToMessageDomain();
-        domain.setMapToMessage(Map.of(
-                "aa", createPrimitiveDomain(),
-                "bb", createPrimitiveDomain()));
-        return domain;
-    }
-
-    private MapToMessageProto createMapToMessageProto() {
-        return MapToMessageProto.newBuilder()
-                .putMapToMessage("aa", createPrimitivesProto())
-                .putMapToMessage("bb", createPrimitivesProto())
-                .build();
-    }
-
-    private PrimitiveMapDomain createPrimitiveMapDomain() {
-        PrimitiveMapDomain domain = new PrimitiveMapDomain();
-        domain.setPrimitiveMap(Map.of(1, 2L, 3, 4L));
-        return domain;
-    }
-
-    private PrimitiveMapProto createPrimitiveMapProto() {
-        return PrimitiveMapProto.newBuilder()
-                .putPrimitiveMap(1, 2)
-                .putPrimitiveMap(3, 4)
-                .build();
-    }
-
-    private PrimitiveDomain createPrimitiveDomain() {
-        PrimitiveDomain primitiveDomain = new PrimitiveDomain();
-        primitiveDomain.setBooleanValue(true);
-        primitiveDomain.setFloatValue(-0.1f);
-        primitiveDomain.setDoubleValue(-0.5);
-        primitiveDomain.setIntValue(-1);
-        primitiveDomain.setLongValue(-2L);
-
-        return primitiveDomain;
-    }
-
-    private PrimitivesProto createPrimitivesProto() {
-        return PrimitivesProto.newBuilder()
-                .setBooleanValue(true)
-                .setFloatValue(-0.1f)
-                .setDoubleValue(-0.5)
-                .setIntValue(-1)
-                .setLongValue(-2L)
-                .build();
-    }
-
-    private StringDomain createStringDomain() {
-        StringDomain stringDomain = new StringDomain();
-        stringDomain.setStringValue("aaaa");
-        return stringDomain;
-    }
-
-    private StringProto createStringProto() {
-        return StringProto.newBuilder().setStringValue("aaaa").build();
-    }
-
-    private SimpleContainerDomain createSimpleContainerDomain() {
-        SimpleContainerDomain simpleContainerDomain =  new SimpleContainerDomain();
-        simpleContainerDomain.setPrimitives(createPrimitiveDomain());
-
-        return simpleContainerDomain;
-    }
-
-    private SimpleContainerProto createSimpleContainerProto() {
-        return SimpleContainerProto.newBuilder()
-                .setPrimitives(createPrimitivesProto())
-                .build();
-    }
-
-    private PrimitiveListDomain createPrimitiveListDomain() {
-        PrimitiveListDomain listDomain = new PrimitiveListDomain();
-        listDomain.setIntList(new ArrayList<>(List.of(1, 2, 3)));
-        return listDomain;
-    }
-
-    private PrimitiveListProto createPrimitiveListProto() {
-        return PrimitiveListProto.newBuilder().addAllIntList(List.of(1, 2, 3)).build();
-    }
-
-    private ConcretePrimitiveListDomain createConcretePrimitiveListDomain() {
-        ConcretePrimitiveListDomain listDomain = new ConcretePrimitiveListDomain();
-        listDomain.setIntList(new LinkedList<>(List.of(1, 2, 3)));
-        return listDomain;
-    }
-
-    private ConcretePrimitiveListProto createConcretePrimitiveListProto() {
-        return ConcretePrimitiveListProto.newBuilder().addAllIntList(List.of(1, 2, 3)).build();
-    }
-
-    private StringListDomain createStringListDomain() {
-        StringListDomain listDomain = new StringListDomain();
-        listDomain.setStringList(new ArrayList<>(List.of("aa", "bb", "cc")));
-        return listDomain;
-    }
-
-    private StringListProto createStringListProto() {
-        return StringListProto.newBuilder().addAllStringList(List.of("aa", "bb", "cc")).build();
-    }
-
-    private MessageListDomain createMessageListDomain() {
-        MessageListDomain listDomain = new MessageListDomain();
-        listDomain.setMessageList(new ArrayList<>(List.of(createPrimitiveDomain(), createPrimitiveDomain())));
-        return listDomain;
-    }
-
-    private MessageListProto createMessageListProto() {
-        return MessageListProto.newBuilder()
-                .addMessageList(createPrimitivesProto())
-                .addMessageList(createPrimitivesProto())
-                .build();
-    }
-
-    private ConcreteMessageListDomain createConcreteMessageListDomain() {
-        ConcreteMessageListDomain listDomain = new ConcreteMessageListDomain();
-        listDomain.setMessageList(new LinkedList<>(List.of(createPrimitiveDomain(), createPrimitiveDomain())));
-        return listDomain;
-    }
-
-    private ConcreteMessageListProto createConcreteMessageListProto() {
-        return ConcreteMessageListProto.newBuilder()
-                .addMessageList(createPrimitivesProto())
-                .addMessageList(createPrimitivesProto())
-                .build();
-    }
 }
