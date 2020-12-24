@@ -11,21 +11,35 @@ import {{protoFullName}};
 import {{oneofImplClass}};
         {{/oneOfFieldsData}}
     {{/oneofBaseFieldsData}}
+    {{#fieldsData}}
+        {{#hasConverter}}
+import {{converterFullName}};
+        {{/hasConverter}}
+    {{/fieldsData}}
 {{/classesData}}
 
 @Generated(value = "{{generator}}")
 public class {{converterClass}} {
-    {{#classesData}}
+{{#classesData}}
     static public {{protoClass}} toProto({{domainClass}} domain) {
-        {{protoClass}}.Builder builder = {{protoClass}}.newBuilder();
 
-        {{#fieldsData}}
+        {{protoClass}}.Builder builder = {{protoClass}}.newBuilder();
+    {{#fieldsData}}
+        {{#hasConverter}}
+        {{converterClass}} converter = new {{converterClass}}();
+        if(converter.shouldAssignToProto(domain.{{domainGetterMethod}}())) {
+            {{{addToBuilderUsingConverter}}};
+        }
+        {{/hasConverter}}
+        {{^hasConverter}}
         {{{checkNotNullCommand}}}
             {{{addToBuilderCommand}}};
         {{{closeCheckNotNullCommand}}}
-        {{/fieldsData}}
+        {{/hasConverter}}
 
-        {{#oneofBaseFieldsData}}
+    {{/fieldsData}}
+
+    {{#oneofBaseFieldsData}}
         if(domain.get{{oneofBaseField}}() == null) {
         } else
         {{#oneOfFieldsData}}
@@ -35,7 +49,7 @@ public class {{converterClass}} {
         {{/oneOfFieldsData}}
         {}
 
-        {{/oneofBaseFieldsData}}
+    {{/oneofBaseFieldsData}}
         return builder.build();
     }
 
@@ -43,9 +57,17 @@ public class {{converterClass}} {
         {{domainClass}} domain = new {{domainClass}}();
 
     {{#fieldsData}}
+        {{#hasConverter}}
+        {{{checkProtoHasValueCommand}}}
+        {{converterClass}} converter = new {{converterClass}}();
+        {{{setInDomainUsingConverter}}};
+        {{{closeProtoHasValueCommand}}}
+        {{/hasConverter}}
+        {{^hasConverter}}
         {{{checkProtoHasValueCommand}}}
         {{{setInDomainCommand}}};
         {{{closeProtoHasValueCommand}}}
+        {{/hasConverter}}
     {{/fieldsData}}
 
     {{#oneofBaseFieldsData}}

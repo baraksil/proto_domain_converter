@@ -97,3 +97,7 @@ message AllInOneProto {
     }
 }
 
+message TypeConverterProto {
+    int32 int_val = 1;
+}
+

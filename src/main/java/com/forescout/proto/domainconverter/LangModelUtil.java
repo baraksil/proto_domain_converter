@@ -21,6 +21,17 @@ public class LangModelUtil {
         this.processingEnv = processingEnv;
     }
 
+    public TypeMirror getClassFromAnnotation(Runnable classGetterFromAnnotation) {
+        try {
+            //A hack. It always throws the exception, and this is the easiest way to get the TypeMirror of the class
+            classGetterFromAnnotation.run();
+        }
+        catch( MirroredTypeException mte ) {
+            return mte.getTypeMirror();
+        }
+        return null;
+    }
+
     public TypeMirror getProtoClassFromAnnotation(ProtoClass protoClassAnnotation) {
         try {
             //A hack. It always throws the exception, and this is the easiest way to get the TypeMirror of the class

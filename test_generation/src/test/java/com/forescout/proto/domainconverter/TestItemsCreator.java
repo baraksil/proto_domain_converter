@@ -3,6 +3,7 @@ package com.forescout.proto.domainconverter;
 import com.forescout.proto.domainconverter.domain.*;
 import com.forescout.proto.domainconverter.domain.oneof.OneofIntImplDomain;
 import com.forescout.proto.domainconverter.domain.oneof.OneofWithInheritanceDomain;
+import com.forescout.proto.domainconverter.domain.type_converter.TypeConverterDomain;
 import com.forescout.proto.domainconverter.test.proto.*;
 import com.google.protobuf.ByteString;
 
@@ -225,5 +226,15 @@ public class TestItemsCreator {
                 .addMessageList(createPrimitivesProto())
                 .addMessageList(createPrimitivesProto())
                 .build();
+    }
+
+    static public TypeConverterDomain createTypeConverterDomain() {
+        TypeConverterDomain domain = new TypeConverterDomain();
+        domain.setStrVal("5");
+        return domain;
+    }
+
+    static public TypeConverterProto createTypeConverterProto() {
+        return TypeConverterProto.newBuilder().setIntVal(5).build();
     }
 }

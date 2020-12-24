@@ -1,9 +1,6 @@
 package com.forescout.proto.domainconverter;
 
-import com.forescout.proto.domainconverter.annotations.OneofBase;
-import com.forescout.proto.domainconverter.annotations.OneofField;
-import com.forescout.proto.domainconverter.annotations.ProtoClass;
-import com.forescout.proto.domainconverter.annotations.ProtoField;
+import com.forescout.proto.domainconverter.annotations.*;
 import com.forescout.proto.domainconverter.conversion_data.ConversionData;
 import com.forescout.proto.domainconverter.conversion_data.FieldData;
 import com.forescout.proto.domainconverter.conversion_data.OneofBaseFieldData;
@@ -11,7 +8,6 @@ import com.forescout.proto.domainconverter.conversion_data.OneofFieldData;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
-import com.google.protobuf.ByteString;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -168,6 +164,13 @@ public class ConverterGenerator extends AbstractProcessor {
         fieldData.fieldType = calculateFieldType(fieldType);
         fieldData.dataStructureConcreteType = calculateDataStructureConcreteType(field);
 
+        ProtoConverter protoConverterAnnotation = field.getAnnotation(ProtoConverter.class);
+        if(protoConverterAnnotation != null) {
+            fieldData.protoTypeForConverter = protoConverterAnnotation.protoType();
+            TypeMirror converterType = langModelUtil.getClassFromAnnotation(() -> protoConverterAnnotation.converter());
+            fieldData.converterFullName = converterType.toString();
+            fieldData.converterClass = StringUtils.getSimpleName(fieldData.converterFullName);
+        }
         return fieldData;
     }
 

@@ -1,16 +1,14 @@
 package com.forescout.proto.domainconverter;
 
 import com.forescout.proto.domainconverter.domain.*;
-import com.forescout.proto.domainconverter.domain.oneof.OneofIntImplDomain;
 import com.forescout.proto.domainconverter.domain.oneof.OneofWithInheritanceDomain;
+import com.forescout.proto.domainconverter.domain.type_converter.TypeConverterDomain;
 import com.forescout.proto.domainconverter.generated.ProtoDomainConverter;
 import com.forescout.proto.domainconverter.test.proto.*;
-import com.google.protobuf.ByteString;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConverterTest {
@@ -356,6 +354,24 @@ public class ConverterTest {
         AllInOneDomain domain = TestItemsCreator.createAllInOneDomain();
         AllInOneProto proto = ProtoDomainConverter.toProto(domain);
         AllInOneProto expected = TestItemsCreator.createAllInOneProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testTypeConverterToDomain() {
+        TypeConverterProto proto = TestItemsCreator.createTypeConverterProto();
+        TypeConverterDomain domain = ProtoDomainConverter.toDomain(proto);
+        TypeConverterDomain expected = TestItemsCreator.createTypeConverterDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
+    void testTypeConverterToProto() {
+        TypeConverterDomain domain = TestItemsCreator.createTypeConverterDomain();
+        TypeConverterProto proto = ProtoDomainConverter.toProto(domain);
+        TypeConverterProto expected = TestItemsCreator.createTypeConverterProto();
 
         assertEquals(expected, proto);
     }

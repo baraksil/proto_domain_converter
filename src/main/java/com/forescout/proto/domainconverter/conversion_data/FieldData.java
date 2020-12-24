@@ -1,10 +1,74 @@
 package com.forescout.proto.domainconverter.conversion_data;
 
+import com.forescout.proto.domainconverter.custom.ProtoType;
+
 public class FieldData {
     public ConversionData.FieldType fieldType;
     public String protoFieldMethodSuffix;
     public String domainFieldMethodSuffix;
     public String dataStructureConcreteType;
+
+    public String converterClass;
+    public String converterFullName;
+    public ProtoType protoTypeForConverter;
+
+    public boolean hasConverter() {
+        return converterClass != null;
+    }
+
+    public String converterName() {
+        return converterClass;
+    }
+
+    private String protoBuilderSetCommand() {
+        switch (protoTypeForConverter) {
+            case MAP:
+                return "putAll" + protoFieldMethodSuffix;
+            case LIST:
+                return "addAll" + protoFieldMethodSuffix;
+            case OTHER:
+                return "set" + protoFieldMethodSuffix;
+            default:
+                throw new RuntimeException("Unhandled proto type: " + fieldType);
+        }
+    }
+
+    private String domainGetterMethodPrefix() {
+        if(fieldType.equals(ConversionData.FieldType.BOOLEAN)) {
+            return "is";
+        }
+
+        return "get";
+    }
+
+    public String domainGetterMethod() {
+       return domainGetterMethodPrefix() +  domainFieldMethodSuffix;
+    }
+
+    public String addToBuilderUsingConverter() {
+        return "builder." + protoBuilderSetCommand() + "(converter.toProtobufValue(domain." + domainGetterMethod() + "()))";
+    }
+
+    private String protoGetterSuffix() {
+        switch (protoTypeForConverter) {
+            case LIST:
+                return "List";
+            case MAP:
+                return "Map";
+            case OTHER:
+                return "";
+            default:
+                throw new RuntimeException("Unhandled proto type: " + fieldType);
+        }
+    }
+
+    private String protoGetterMethod() {
+        return "get" + protoFieldMethodSuffix + protoGetterSuffix();
+    }
+
+    public String setInDomainUsingConverter() {
+        return "domain.set" + domainFieldMethodSuffix + "(converter.toDomainValue(proto." + protoGetterMethod() + "()))";
+    }
 
     public String checkNotNullCommand() {
         if(isNullableDomainType()) {
@@ -88,7 +152,7 @@ public class FieldData {
             case PRIMITIVE_LIST:
                 return "domain.set" + domainFieldMethodSuffix + "(new " + dataStructureConcreteType + "<>(proto.get" + protoFieldMethodSuffix + "List()))";
             case MESSAGE_LIST:
-                return "domain.setMessageList(proto.getMessageListList().stream().map(item -> toDomain(item)).collect(Collectors.toCollection(" + dataStructureConcreteType + "::new)))";
+                return "domain.set" + domainFieldMethodSuffix + "(proto.getMessageListList().stream().map(item -> toDomain(item)).collect(Collectors.toCollection(" + dataStructureConcreteType + "::new)))";
             case MAP_TO_MESSAGE:
                 return "domain.set"+ domainFieldMethodSuffix + "(proto.get" + protoFieldMethodSuffix + "Map().entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> toDomain(e.getValue()), (v1, v2) -> v1, " + dataStructureConcreteType + "::new)))";
             case BYTES:
