@@ -2,16 +2,14 @@ package com.forescout.proto.domainconverter;
 
 import com.forescout.proto.domainconverter.domain.*;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomListConverterDomain;
+import com.forescout.proto.domainconverter.domain.custom_converter.CustomMapConverterDomain;
 import com.forescout.proto.domainconverter.domain.oneof.OneofIntImplDomain;
 import com.forescout.proto.domainconverter.domain.oneof.OneofWithInheritanceDomain;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomConverterDomain;
 import com.forescout.proto.domainconverter.test.proto.*;
 import com.google.protobuf.ByteString;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TestItemsCreator {
     static public AllInOneProto createAllInOneProto() {
@@ -247,5 +245,19 @@ public class TestItemsCreator {
 
     static public CustomListConverterProto createCustomListConverterProto() {
         return CustomListConverterProto.newBuilder().addIntList(5).addIntList(6).build();
+    }
+
+    static public CustomMapConverterDomain createCustomMapConverterDomain() {
+        CustomMapConverterDomain domain = new CustomMapConverterDomain();
+        HashMap<String, String> map = new HashMap<>();
+        map.put("1", "2");
+        map.put("3", "4");
+
+        domain.setMap(map);
+        return domain;
+    }
+
+    static public CustomMapConverterProto createCustomMapConverterProto() {
+        return CustomMapConverterProto.newBuilder().putIntMap(1,2).putIntMap(3,4).build();
     }
 }

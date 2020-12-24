@@ -105,3 +105,7 @@ message CustomListConverterProto {
     repeated int32 int_list = 1;
 }
 
+message CustomMapConverterProto {
+    map<int32, int32> int_map = 1;
+}
+
