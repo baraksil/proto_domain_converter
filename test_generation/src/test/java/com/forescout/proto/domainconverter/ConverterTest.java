@@ -1,6 +1,7 @@
 package com.forescout.proto.domainconverter;
 
 import com.forescout.proto.domainconverter.domain.*;
+import com.forescout.proto.domainconverter.domain.custom_converter.CustomListConverterDomain;
 import com.forescout.proto.domainconverter.domain.oneof.OneofWithInheritanceDomain;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomConverterDomain;
 import com.forescout.proto.domainconverter.generated.ProtoDomainConverter;
@@ -359,7 +360,7 @@ public class ConverterTest {
     }
 
     @Test
-    void testTypeConverterToDomain() {
+    void testCustomConverterToDomain() {
         CustomConverterProto proto = TestItemsCreator.createCustomConverterProto();
         CustomConverterDomain domain = ProtoDomainConverter.toDomain(proto);
         CustomConverterDomain expected = TestItemsCreator.createCustomConverterDomain();
@@ -368,10 +369,28 @@ public class ConverterTest {
     }
 
     @Test
-    void testTypeConverterToProto() {
+    void testCustomConverterToProto() {
         CustomConverterDomain domain = TestItemsCreator.createCustomConverterDomain();
         CustomConverterProto proto = ProtoDomainConverter.toProto(domain);
         CustomConverterProto expected = TestItemsCreator.createCustomConverterProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testCustomListConverterToDomain() {
+        CustomListConverterProto proto = TestItemsCreator.createCustomListConverterProto();
+        CustomListConverterDomain domain = ProtoDomainConverter.toDomain(proto);
+        CustomListConverterDomain expected = TestItemsCreator.createCustomListConverterDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
+    void testCustomListConverterToProto() {
+        CustomListConverterDomain domain = TestItemsCreator.createCustomListConverterDomain();
+        CustomListConverterProto proto = ProtoDomainConverter.toProto(domain);
+        CustomListConverterProto expected = TestItemsCreator.createCustomListConverterProto();
 
         assertEquals(expected, proto);
     }

@@ -1,6 +1,7 @@
 package com.forescout.proto.domainconverter;
 
 import com.forescout.proto.domainconverter.domain.*;
+import com.forescout.proto.domainconverter.domain.custom_converter.CustomListConverterDomain;
 import com.forescout.proto.domainconverter.domain.oneof.OneofIntImplDomain;
 import com.forescout.proto.domainconverter.domain.oneof.OneofWithInheritanceDomain;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomConverterDomain;
@@ -236,5 +237,15 @@ public class TestItemsCreator {
 
     static public CustomConverterProto createCustomConverterProto() {
         return CustomConverterProto.newBuilder().setIntVal(5).build();
+    }
+
+    static public CustomListConverterDomain createCustomListConverterDomain() {
+        CustomListConverterDomain domain = new CustomListConverterDomain();
+        domain.setCommaSeparatedInt("5,6");
+        return domain;
+    }
+
+    static public CustomListConverterProto createCustomListConverterProto() {
+        return CustomListConverterProto.newBuilder().addIntList(5).addIntList(6).build();
     }
 }

@@ -101,3 +101,7 @@ message CustomConverterProto {
     int32 int_val = 1;
 }
 
+message CustomListConverterProto {
+    repeated int32 int_list = 1;
+}
+
