@@ -97,7 +97,7 @@ message AllInOneProto {
     }
 }
 
-message TypeConverterProto {
+message CustomConverterProto {
     int32 int_val = 1;
 }
 

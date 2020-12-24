@@ -1,4 +1,4 @@
-package com.forescout.proto.domainconverter.domain.type_converter;
+package com.forescout.proto.domainconverter.domain.custom_converter;
 
 import com.forescout.proto.domainconverter.custom.TypeConverter;
 

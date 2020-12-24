@@ -2,7 +2,7 @@ package com.forescout.proto.domainconverter;
 
 import com.forescout.proto.domainconverter.domain.*;
 import com.forescout.proto.domainconverter.domain.oneof.OneofWithInheritanceDomain;
-import com.forescout.proto.domainconverter.domain.type_converter.TypeConverterDomain;
+import com.forescout.proto.domainconverter.domain.custom_converter.CustomConverterDomain;
 import com.forescout.proto.domainconverter.generated.ProtoDomainConverter;
 import com.forescout.proto.domainconverter.test.proto.*;
 import org.junit.jupiter.api.Test;
@@ -360,18 +360,18 @@ public class ConverterTest {
 
     @Test
     void testTypeConverterToDomain() {
-        TypeConverterProto proto = TestItemsCreator.createTypeConverterProto();
-        TypeConverterDomain domain = ProtoDomainConverter.toDomain(proto);
-        TypeConverterDomain expected = TestItemsCreator.createTypeConverterDomain();
+        CustomConverterProto proto = TestItemsCreator.createCustomConverterProto();
+        CustomConverterDomain domain = ProtoDomainConverter.toDomain(proto);
+        CustomConverterDomain expected = TestItemsCreator.createCustomConverterDomain();
 
         assertEquals(expected, domain);
     }
 
     @Test
     void testTypeConverterToProto() {
-        TypeConverterDomain domain = TestItemsCreator.createTypeConverterDomain();
-        TypeConverterProto proto = ProtoDomainConverter.toProto(domain);
-        TypeConverterProto expected = TestItemsCreator.createTypeConverterProto();
+        CustomConverterDomain domain = TestItemsCreator.createCustomConverterDomain();
+        CustomConverterProto proto = ProtoDomainConverter.toProto(domain);
+        CustomConverterProto expected = TestItemsCreator.createCustomConverterProto();
 
         assertEquals(expected, proto);
     }
