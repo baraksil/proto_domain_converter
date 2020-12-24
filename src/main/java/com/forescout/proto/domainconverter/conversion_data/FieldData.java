@@ -58,7 +58,7 @@ public class FieldData {
             case OTHER:
                 return "";
             default:
-                throw new RuntimeException("Unhandled proto type: " + fieldType);
+                throw new RuntimeException("Unhandled proto type: " + protoTypeForConverter);
         }
     }
 
