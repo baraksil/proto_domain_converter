@@ -7,24 +7,18 @@ public class FieldData {
     public String dataStructureConcreteType;
 
     public String checkNotNullCommand() {
-        switch (fieldType) {
-            case MESSAGE:
-            case PRIMITIVE_LIST:
-            case MESSAGE_LIST:
-            case PRIMITIVE_MAP:
-            case MAP_TO_MESSAGE:
-            case STRING:
-            case BYTES:
-                return "if(domain.get" + domainFieldMethodSuffix + "() != null) {";
-            case OTHER:
-            case BOOLEAN:
-                return "";
-            default:
-                throw new RuntimeException("Unhandled field type: " + fieldType);
+        if(isNullableDomainType()) {
+            return "if(domain.get" + domainFieldMethodSuffix + "() != null) {";
         }
+
+        return "";
     }
 
     public String closeCheckNotNullCommand() {
+        return isNullableDomainType() ? "}" : "";
+    }
+
+    private boolean isNullableDomainType() {
         switch (fieldType) {
             case MESSAGE:
             case PRIMITIVE_LIST:
@@ -33,10 +27,10 @@ public class FieldData {
             case MAP_TO_MESSAGE:
             case STRING:
             case BYTES:
-                return "}";
+                return true;
             case OTHER:
             case BOOLEAN:
-                return "";
+                return false;
             default:
                 throw new RuntimeException("Unhandled field type: " + fieldType);
         }
@@ -67,39 +61,18 @@ public class FieldData {
     }
 
     public String checkProtoHasValueCommand() {
-        switch (fieldType) {
-            case MESSAGE:
-                return "if(proto.has" + protoFieldMethodSuffix + "()) {";
-            case PRIMITIVE_LIST:
-            case MESSAGE_LIST:
-            case PRIMITIVE_MAP:
-            case MAP_TO_MESSAGE:
-            case OTHER:
-            case STRING:
-            case BYTES:
-            case BOOLEAN:
-                return "";
-            default:
-                throw new RuntimeException("Unhandled field type: " + fieldType);
+        if(isNullableProtoType()) {
+            return "if(proto.has" + protoFieldMethodSuffix + "()) {";
         }
+        return "";
     }
 
     public String closeProtoHasValueCommand() {
-        switch (fieldType) {
-            case MESSAGE:
-                return "}";
-            case PRIMITIVE_LIST:
-            case MESSAGE_LIST:
-            case PRIMITIVE_MAP:
-            case MAP_TO_MESSAGE:
-            case STRING:
-            case BYTES:
-            case OTHER:
-            case BOOLEAN:
-                return "";
-            default:
-                throw new RuntimeException("Unhandled field type: " + fieldType);
-        }
+        return isNullableProtoType() ? "}" : "";
+    }
+
+    public boolean isNullableProtoType() {
+        return fieldType.equals(ConversionData.FieldType.MESSAGE);
     }
 
     public String setInDomainCommand() {
