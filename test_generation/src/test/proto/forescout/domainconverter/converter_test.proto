@@ -109,3 +109,13 @@ message CustomMapConverterProto {
     map<int32, int32> int_map = 1;
 }
 
+message CustomMapperProto {
+    enum Protocol {
+        TCP = 0;
+        UDP = 1;
+    }
+
+    Protocol protocol = 1;
+    StringProto str = 2;
+}
+

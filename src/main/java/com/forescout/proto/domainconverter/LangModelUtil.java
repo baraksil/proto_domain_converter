@@ -32,17 +32,6 @@ public class LangModelUtil {
         return null;
     }
 
-    public TypeMirror getProtoClassFromAnnotation(ProtoClass protoClassAnnotation) {
-        try {
-            //A hack. It always throws the exception, and this is the easiest way to get the TypeMirror of the class
-            protoClassAnnotation.protoClass();
-        }
-        catch( MirroredTypeException mte ) {
-            return mte.getTypeMirror();
-        }
-        return null;
-    }
-
     public TypeMirror getDomainClassFromAnnotation(OneofField oneofFieldAnnotation) {
         try {
             //A hack. It always throws the exception, and this is the easiest way to get the TypeMirror of the class

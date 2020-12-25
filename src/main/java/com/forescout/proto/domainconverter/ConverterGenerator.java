@@ -5,6 +5,7 @@ import com.forescout.proto.domainconverter.conversion_data.ConversionData;
 import com.forescout.proto.domainconverter.conversion_data.FieldData;
 import com.forescout.proto.domainconverter.conversion_data.OneofBaseFieldData;
 import com.forescout.proto.domainconverter.conversion_data.OneofFieldData;
+import com.forescout.proto.domainconverter.custom.NullMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
@@ -91,10 +92,19 @@ public class ConverterGenerator extends AbstractProcessor {
         classData.domainFullName = domainElement.getQualifiedName().toString();
 
         ProtoClass protoClassAnnotation = domainElement.getAnnotation(ProtoClass.class);
-        TypeMirror protoClass = langModelUtil.getProtoClassFromAnnotation(protoClassAnnotation);
+        TypeMirror protoClass = langModelUtil.getClassFromAnnotation(protoClassAnnotation::protoClass);
 
         classData.protoFullName = protoClass.toString();
         classData.protoClass = StringUtils.getSimpleName(classData.protoFullName);
+        TypeMirror mapperClass = langModelUtil.getClassFromAnnotation(protoClassAnnotation::mapper);
+        String mapperFullName = mapperClass.toString();
+
+        classData.mapperFullName = mapperFullName.equals(NullMapper.class.getName()) ? null : mapperFullName;
+        classData.mapperClass = classData.mapperFullName == null ? null : StringUtils.getSimpleName(mapperFullName);
+
+        if(classData.mapperFullName != null) {
+            return classData;
+        }
 
         for(Element field : getDomainFields(domainElement, protoClassAnnotation.withInheritedFields())) {
             FieldData fieldData = createFieldData((VariableElement)field);

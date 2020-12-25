@@ -6,6 +6,9 @@ import com.google.protobuf.ByteString;
 {{#classesData}}
 import {{domainFullName}};
 import {{protoFullName}};
+    {{#hasMapper}}
+import {{mapperFullName}};
+    {{/hasMapper}}
     {{#oneofBaseFieldsData}}
         {{#oneOfFieldsData}}
 import {{oneofImplClass}};
@@ -22,8 +25,13 @@ import {{converterFullName}};
 public class {{converterClass}} {
 {{#classesData}}
     static public {{protoClass}} toProto({{domainClass}} domain) {
-
+    {{#hasMapper}}
+        {{mapperClass}} mapper = new {{mapperClass}}();
+        return mapper.toProto(domain);
+    {{/hasMapper}}
+    {{^hasMapper}}
         {{protoClass}}.Builder builder = {{protoClass}}.newBuilder();
+
     {{#fieldsData}}
         {{#hasConverter}}
         {{converterClass}} converter = new {{converterClass}}();
@@ -38,7 +46,6 @@ public class {{converterClass}} {
         {{/hasConverter}}
 
     {{/fieldsData}}
-
     {{#oneofBaseFieldsData}}
         if(domain.get{{oneofBaseField}}() == null) {
         } else
@@ -51,11 +58,16 @@ public class {{converterClass}} {
 
     {{/oneofBaseFieldsData}}
         return builder.build();
+    {{/hasMapper}}
     }
 
     static public {{domainClass}} toDomain({{protoClass}} proto) {
+    {{#hasMapper}}
+        {{mapperClass}} mapper = new {{mapperClass}}();
+        return mapper.toDomain(proto);
+    {{/hasMapper}}
+    {{^hasMapper}}
         {{domainClass}} domain = new {{domainClass}}();
-
     {{#fieldsData}}
         {{#hasConverter}}
         {{{checkProtoHasValueCommand}}}
@@ -68,8 +80,8 @@ public class {{converterClass}} {
         {{{setInDomainCommand}}};
         {{{closeProtoHasValueCommand}}}
         {{/hasConverter}}
-    {{/fieldsData}}
 
+    {{/fieldsData}}
     {{#oneofBaseFieldsData}}
         switch (proto.get{{oneofProtoName}}Case()) {
         {{#oneOfFieldsData}}
@@ -82,9 +94,10 @@ public class {{converterClass}} {
         }
 
     {{/oneofBaseFieldsData}}
-
         return domain;
+    {{/hasMapper}}
     }
+
 
     {{/classesData}}
 }

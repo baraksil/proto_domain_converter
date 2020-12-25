@@ -3,6 +3,7 @@ package com.forescout.proto.domainconverter;
 import com.forescout.proto.domainconverter.domain.*;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomListConverterDomain;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomMapConverterDomain;
+import com.forescout.proto.domainconverter.domain.custom_mapper.CustomMapperDomain;
 import com.forescout.proto.domainconverter.domain.oneof.OneofWithInheritanceDomain;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomConverterDomain;
 import com.forescout.proto.domainconverter.generated.ProtoDomainConverter;
@@ -410,6 +411,24 @@ public class ConverterTest {
         CustomMapConverterDomain domain = TestItemsCreator.createCustomMapConverterDomain();
         CustomMapConverterProto proto = ProtoDomainConverter.toProto(domain);
         CustomMapConverterProto expected = TestItemsCreator.createCustomMapConverterProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testCustomMapperToDomain() {
+        CustomMapperProto proto = TestItemsCreator.createCustomMapperProto();
+        CustomMapperDomain domain = ProtoDomainConverter.toDomain(proto);
+        CustomMapperDomain expected = TestItemsCreator.createCustomMapperDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
+    void testCustomMapperToProto() {
+        CustomMapperDomain domain = TestItemsCreator.createCustomMapperDomain();
+        CustomMapperProto proto = ProtoDomainConverter.toProto(domain);
+        CustomMapperProto expected = TestItemsCreator.createCustomMapperProto();
 
         assertEquals(expected, proto);
     }

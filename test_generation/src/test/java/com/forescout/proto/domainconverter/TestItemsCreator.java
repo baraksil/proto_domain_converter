@@ -3,6 +3,7 @@ package com.forescout.proto.domainconverter;
 import com.forescout.proto.domainconverter.domain.*;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomListConverterDomain;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomMapConverterDomain;
+import com.forescout.proto.domainconverter.domain.custom_mapper.CustomMapperDomain;
 import com.forescout.proto.domainconverter.domain.oneof.OneofIntImplDomain;
 import com.forescout.proto.domainconverter.domain.oneof.OneofWithInheritanceDomain;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomConverterDomain;
@@ -259,5 +260,22 @@ public class TestItemsCreator {
 
     static public CustomMapConverterProto createCustomMapConverterProto() {
         return CustomMapConverterProto.newBuilder().putIntMap(1,2).putIntMap(3,4).build();
+    }
+
+    static public CustomMapperDomain createCustomMapperDomain() {
+        CustomMapperDomain domain = new CustomMapperDomain();
+        domain.setUdp(true);
+        StringDomain stringDomain = new StringDomain();
+        stringDomain.setStringValue("aaa");
+        domain.setStringDomain(stringDomain);
+
+        return domain;
+    }
+
+    static public CustomMapperProto createCustomMapperProto() {
+        return CustomMapperProto.newBuilder()
+                .setProtocol(CustomMapperProto.Protocol.UDP)
+                .setStr(StringProto.newBuilder().setStringValue("aaa"))
+                .build();
     }
 }

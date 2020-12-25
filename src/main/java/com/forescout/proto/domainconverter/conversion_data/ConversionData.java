@@ -1,5 +1,7 @@
 package com.forescout.proto.domainconverter.conversion_data;
 
+import com.forescout.proto.domainconverter.custom.Mapper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +22,14 @@ public class ConversionData {
         public String domainClass;
         public String protoFullName;
         public String protoClass;
+        public String mapperClass;
+        public String mapperFullName;
+
         public List<FieldData> fieldsData = new ArrayList<>();
         public List<OneofBaseFieldData> oneofBaseFieldsData = new ArrayList<>();
+        public boolean hasMapper() {
+            return mapperClass != null;
+        }
     }
 
     public enum FieldType {
