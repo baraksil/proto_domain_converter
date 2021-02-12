@@ -24,6 +24,7 @@ public class ConversionData {
         public String protoClass;
         public String mapperClass;
         public String mapperFullName;
+        public OneofBaseClassData oneofBaseClassData;
 
         public List<FieldData> fieldsData = new ArrayList<>();
         public List<OneofBaseFieldData> oneofBaseFieldsData = new ArrayList<>();

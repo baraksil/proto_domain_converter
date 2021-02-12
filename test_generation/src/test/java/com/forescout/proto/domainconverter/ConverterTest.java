@@ -4,8 +4,10 @@ import com.forescout.proto.domainconverter.domain.*;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomListConverterDomain;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomMapConverterDomain;
 import com.forescout.proto.domainconverter.domain.custom_mapper.CustomMapperDomain;
-import com.forescout.proto.domainconverter.domain.oneof.OneofWithInheritanceDomain;
+import com.forescout.proto.domainconverter.domain.oneof.class_with_members.OneofBaseClassWithFieldsDomain;
+import com.forescout.proto.domainconverter.domain.oneof.field.OneofWithFieldInheritanceDomain;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomConverterDomain;
+import com.forescout.proto.domainconverter.domain.oneof.clazz.OneofBaseClassDomain;
 import com.forescout.proto.domainconverter.generated.ProtoDomainConverter;
 import com.forescout.proto.domainconverter.test.proto.*;
 import org.junit.jupiter.api.Test;
@@ -336,18 +338,54 @@ public class ConverterTest {
 
     @Test
     void testOneofWithInheritanceToProto() {
-        OneofWithInheritanceDomain domain = TestItemsCreator.createOneofWithInheritanceDomain();
-        OneofWithInheritanceProto proto = ProtoDomainConverter.toProto(domain);
-        OneofWithInheritanceProto expected = TestItemsCreator.createOneofWithInheritanceProto();
+        OneofWithFieldInheritanceDomain domain = TestItemsCreator.createOneofWithInheritanceDomain();
+        OneofWithFieldInheritanceProto proto = ProtoDomainConverter.toProto(domain);
+        OneofWithFieldInheritanceProto expected = TestItemsCreator.createOneofWithFieldInheritanceProto();
 
         assertEquals(expected, proto);
     }
 
     @Test
     void testOneofWithInheritanceToDomain() {
-        OneofWithInheritanceProto proto = TestItemsCreator.createOneofWithInheritanceProto();
-        OneofWithInheritanceDomain domain = ProtoDomainConverter.toDomain(proto);
-        OneofWithInheritanceDomain expected = TestItemsCreator.createOneofWithInheritanceDomain();
+        OneofWithFieldInheritanceProto proto = TestItemsCreator.createOneofWithFieldInheritanceProto();
+        OneofWithFieldInheritanceDomain domain = ProtoDomainConverter.toDomain(proto);
+        OneofWithFieldInheritanceDomain expected = TestItemsCreator.createOneofWithInheritanceDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
+    void testOneofBaseClassToProto() {
+        OneofBaseClassDomain domain = TestItemsCreator.createOneofbaseClassDomain();
+        OneofBaseClassProto proto = ProtoDomainConverter.toProto(domain);
+        OneofBaseClassProto expected = TestItemsCreator.createOneofBaseClassProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testOneofBaseClassToDomain() {
+        OneofBaseClassProto proto = TestItemsCreator.createOneofBaseClassProto();
+        OneofBaseClassDomain domain = ProtoDomainConverter.toDomain(proto);
+        OneofBaseClassDomain expected = TestItemsCreator.createOneofbaseClassDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
+    void testOneofBaseClassWithFieldsToProto() {
+        OneofBaseClassWithFieldsDomain domain = TestItemsCreator.createOneofbaseClassWithFieldsDomain();
+        OneofBaseClassWithFieldsProto proto = ProtoDomainConverter.toProto(domain);
+        OneofBaseClassWithFieldsProto expected = TestItemsCreator.OneofBaseClassWithFieldsProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testOneofBaseClassWithFieldsToDomain() {
+        OneofBaseClassWithFieldsProto proto = TestItemsCreator.OneofBaseClassWithFieldsProto();
+        OneofBaseClassWithFieldsDomain domain = ProtoDomainConverter.toDomain(proto);
+        OneofBaseClassWithFieldsDomain expected = TestItemsCreator.createOneofbaseClassWithFieldsDomain();
 
         assertEquals(expected, domain);
     }

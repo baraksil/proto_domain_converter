@@ -4,8 +4,8 @@ import com.forescout.proto.domainconverter.annotations.OneofBase;
 import com.forescout.proto.domainconverter.annotations.OneofField;
 import com.forescout.proto.domainconverter.annotations.ProtoClass;
 import com.forescout.proto.domainconverter.annotations.ProtoField;
-import com.forescout.proto.domainconverter.domain.oneof.OneofBaseDomain;
-import com.forescout.proto.domainconverter.domain.oneof.OneofIntImplDomain;
+import com.forescout.proto.domainconverter.domain.oneof.field.OneofBaseFieldDomain;
+import com.forescout.proto.domainconverter.domain.oneof.field.OneofIntImplDomain;
 import com.forescout.proto.domainconverter.test.proto.AllInOneProto;
 import lombok.Data;
 
@@ -28,11 +28,11 @@ public class AllInOneDomain {
             @OneofField(protoField = "oneof1_int_val", domainClass = OneofIntImplDomain.class, domainField = "intVal"),
             @OneofField(protoField = "oneof1_primitives", domainClass = PrimitiveDomain.class)
     })
-    private OneofBaseDomain value1;
+    private OneofBaseFieldDomain value1;
 
     @OneofBase(oneOfFields = {
             @OneofField(protoField = "oneof2_int_val", domainClass = OneofIntImplDomain.class, domainField = "intVal"),
             @OneofField(protoField = "oneof2_primitives", domainClass = PrimitiveDomain.class)
     })
-    private OneofBaseDomain value2;
+    private OneofBaseFieldDomain value2;
 }

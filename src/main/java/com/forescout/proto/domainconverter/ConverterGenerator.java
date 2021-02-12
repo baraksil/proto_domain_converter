@@ -1,10 +1,7 @@
 package com.forescout.proto.domainconverter;
 
 import com.forescout.proto.domainconverter.annotations.*;
-import com.forescout.proto.domainconverter.conversion_data.ConversionData;
-import com.forescout.proto.domainconverter.conversion_data.FieldData;
-import com.forescout.proto.domainconverter.conversion_data.OneofBaseFieldData;
-import com.forescout.proto.domainconverter.conversion_data.OneofFieldData;
+import com.forescout.proto.domainconverter.conversion_data.*;
 import com.forescout.proto.domainconverter.custom.NullMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
@@ -122,7 +119,22 @@ public class ConverterGenerator extends AbstractProcessor {
             }
         }
 
+        OneofBase oneofBaseAnnotation = domainElement.getAnnotation(OneofBase.class);
+        classData.oneofBaseClassData = createOneofBaseClassData(oneofBaseAnnotation);
+
         return classData;
+    }
+
+    private OneofBaseClassData createOneofBaseClassData(OneofBase oneofBaseAnnotation) {
+        if(oneofBaseAnnotation == null) {
+            return null;
+        }
+
+        OneofBaseClassData oneofBaseClassData = new OneofBaseClassData();
+        oneofBaseClassData.oneofProtoName = StringUtils.snakeCaseToPascalCase(oneofBaseAnnotation.oneofName());
+        oneofBaseClassData.oneOfFieldsData = createOneofFieldDataList(oneofBaseAnnotation);
+
+        return oneofBaseClassData;
     }
 
     private OneofBaseFieldData createOneofBaseFieldData(VariableElement field) {
@@ -137,19 +149,27 @@ public class ConverterGenerator extends AbstractProcessor {
                 StringUtils.snakeCaseToPascalCase(oneofBaseAnnotation.oneofName());
         oneofBaseFieldData.oneofBaseField = StringUtils.capitalize(field.getSimpleName().toString());
 
-        for(OneofField oneofFieldAnnotation : oneofBaseAnnotation.oneOfFields()) {
-            OneofFieldData oneofFieldData = createOneofFieldData(field, oneofFieldAnnotation);
-            oneofBaseFieldData.oneOfFieldsData.add(oneofFieldData);
+        oneofBaseFieldData.oneOfFieldsData = createOneofFieldDataList(oneofBaseAnnotation);
+        for(OneofFieldData oneofFieldData : oneofBaseFieldData.oneOfFieldsData) {
+            oneofFieldData.domainBaseField = oneofBaseFieldData.oneofBaseField;
         }
 
         return oneofBaseFieldData;
     }
 
-    private OneofFieldData createOneofFieldData(VariableElement field, OneofField oneofFieldAnnotation) {
+    private List<OneofFieldData> createOneofFieldDataList(OneofBase oneofBaseAnnotation) {
+        List<OneofFieldData> oneOfFieldsData = new ArrayList<>();
+        for(OneofField oneofFieldAnnotation : oneofBaseAnnotation.oneOfFields()) {
+            OneofFieldData oneofFieldData = createOneofFieldData(oneofFieldAnnotation);
+            oneOfFieldsData.add(oneofFieldData);
+        }
+        return oneOfFieldsData;
+    }
+
+    private OneofFieldData createOneofFieldData(OneofField oneofFieldAnnotation) {
         OneofFieldData oneofFieldData = new OneofFieldData();
 
         oneofFieldData.oneofFieldCase = oneofFieldAnnotation.protoField().toUpperCase();
-        oneofFieldData.domainBaseField = StringUtils.capitalize(field.getSimpleName().toString());
         oneofFieldData.oneOfDomainField = StringUtils.capitalize(oneofFieldAnnotation.domainField());
         oneofFieldData.oneOfProtoField = StringUtils.snakeCaseToPascalCase(oneofFieldAnnotation.protoField());
         TypeMirror domainType = langModelUtil.getDomainClassFromAnnotation(oneofFieldAnnotation);

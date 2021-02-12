@@ -73,10 +73,31 @@ message OneofWithoutInheritanceProto {
     }
 }
 
-message OneofWithInheritanceProto {
+message OneofWithFieldInheritanceProto {
     oneof value {
         int32 int_val = 1;
         PrimitivesProto primitives = 2;
+    }
+}
+
+message OneofBaseClassProto {
+    oneof value {
+        string string_val = 1;
+        TwoIntsProto two_ints_val = 2;
+    }
+}
+
+message TwoIntsProto {
+    int32 int_val1 = 1;
+    int32 int_val2 = 2;
+}
+
+message OneofBaseClassWithFieldsProto {
+    string string_val = 1;
+
+    oneof value {
+        int64 long_val = 2;
+        double double_val = 3;
     }
 }
 

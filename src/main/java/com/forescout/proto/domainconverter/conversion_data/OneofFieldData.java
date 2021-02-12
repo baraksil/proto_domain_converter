@@ -12,6 +12,15 @@ public class OneofFieldData {
     public String oneOfDomainField;
 
     public String addToBuilderCommand() {
+        if(domainBaseField == null) { //class inheritance
+            if(fieldIsMessage) {
+                return "builder.set" + oneOfProtoField + "(toProto((" + oneofImplClassSimple + ")domain))";
+            }
+
+            return "builder.set" + oneOfProtoField + "(((" + oneofImplClassSimple + ")domain).get" + oneOfDomainField + "())";
+        }
+
+        //field inheritance
         if(fieldIsMessage) {
             return "builder.set" + oneOfProtoField + "(toProto((" + oneofImplClassSimple + ")domain.get" + domainBaseField + "()))";
         }

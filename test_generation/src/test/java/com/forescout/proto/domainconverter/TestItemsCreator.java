@@ -4,9 +4,13 @@ import com.forescout.proto.domainconverter.domain.*;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomListConverterDomain;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomMapConverterDomain;
 import com.forescout.proto.domainconverter.domain.custom_mapper.CustomMapperDomain;
-import com.forescout.proto.domainconverter.domain.oneof.OneofIntImplDomain;
-import com.forescout.proto.domainconverter.domain.oneof.OneofWithInheritanceDomain;
+import com.forescout.proto.domainconverter.domain.oneof.class_with_members.OneofBaseClassWithFieldsDomain;
+import com.forescout.proto.domainconverter.domain.oneof.class_with_members.OneofDoubleImplDomain;
+import com.forescout.proto.domainconverter.domain.oneof.field.OneofIntImplDomain;
+import com.forescout.proto.domainconverter.domain.oneof.field.OneofWithFieldInheritanceDomain;
 import com.forescout.proto.domainconverter.domain.custom_converter.CustomConverterDomain;
+import com.forescout.proto.domainconverter.domain.oneof.clazz.OneofBaseClassDomain;
+import com.forescout.proto.domainconverter.domain.oneof.clazz.TwoIntsDomain;
 import com.forescout.proto.domainconverter.test.proto.*;
 import com.google.protobuf.ByteString;
 
@@ -46,16 +50,16 @@ public class TestItemsCreator {
         return BytesProto.newBuilder().setBytesValue(ByteString.copyFrom(new byte[]{0x1b, 0x2b})).build();
     }
 
-    static public OneofWithInheritanceDomain createOneofWithInheritanceDomain() {
-        OneofWithInheritanceDomain domain = new OneofWithInheritanceDomain();
+    static public OneofWithFieldInheritanceDomain createOneofWithInheritanceDomain() {
+        OneofWithFieldInheritanceDomain domain = new OneofWithFieldInheritanceDomain();
         OneofIntImplDomain oneofIntImplDomain = new OneofIntImplDomain();
         oneofIntImplDomain.setIntVal(3);
         domain.setValue(oneofIntImplDomain);
         return domain;
     }
 
-    static public OneofWithInheritanceProto createOneofWithInheritanceProto() {
-        return OneofWithInheritanceProto.newBuilder()
+    static public OneofWithFieldInheritanceProto createOneofWithFieldInheritanceProto() {
+        return OneofWithFieldInheritanceProto.newBuilder()
                 .setIntVal(3)
                 .build();
     }
@@ -277,5 +281,33 @@ public class TestItemsCreator {
                 .setProtocol(CustomMapperProto.Protocol.UDP)
                 .setStr(StringProto.newBuilder().setStringValue("aaa"))
                 .build();
+    }
+
+    public static OneofBaseClassProto createOneofBaseClassProto() {
+        return OneofBaseClassProto.newBuilder()
+                .setTwoIntsVal(TwoIntsProto.newBuilder().setIntVal1(1).setIntVal2(2))
+                .build();
+    }
+
+
+    public static OneofBaseClassDomain createOneofbaseClassDomain() {
+        TwoIntsDomain domain = new TwoIntsDomain();
+        domain.setIntVal1(1);
+        domain.setIntVal2(2);
+        return domain;
+    }
+
+    public static OneofBaseClassWithFieldsProto OneofBaseClassWithFieldsProto() {
+        return OneofBaseClassWithFieldsProto.newBuilder()
+                .setStringVal("aaa")
+                .setDoubleVal(0.5)
+                .build();
+    }
+
+    public static OneofBaseClassWithFieldsDomain createOneofbaseClassWithFieldsDomain() {
+        OneofDoubleImplDomain domain = new OneofDoubleImplDomain();
+        domain.setStringVal("aaa");
+        domain.setDoubleVal(0.5);
+        return domain;
     }
 }
