@@ -10,11 +10,11 @@ Therefore, there is still no official release. The version is "1.0-SNAPSHOT" and
 ## How to get dependency
 In order to get the jar either clone the repository and build using "gradle build" or add to your gradle/maven dependencies.
 
-In order to use gradle/maven use the following details:
-repository url: https://maven.pkg.github.com/baraksil/proto_domain_converter
-groupId: com.forescout.protobuf
-artifactId: proto_domain_converter
-1.0-SNAPSHOT
+In order to use gradle/maven use the following details:  
+repository url: https://maven.pkg.github.com/baraksil/proto_domain_converter  
+groupId: com.forescout.protobuf  
+artifactId: proto_domain_converter  
+version: 1.0-SNAPSHOT
 
 ## How to use it ?
 There are several annotations which map between the application domain objects and the protobuf generated objects. These annotations should be added to the domain classes and they map to the corresponding protobuf definitions.
