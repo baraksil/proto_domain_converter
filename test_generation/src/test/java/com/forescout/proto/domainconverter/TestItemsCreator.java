@@ -78,9 +78,10 @@ public class TestItemsCreator {
 
     static public ConcreteMapToMessageDomain createConcreteMapToMessageDomain() {
         ConcreteMapToMessageDomain domain = new ConcreteMapToMessageDomain();
-        domain.setMapToMessage(Map.of(
+        domain.setMapToMessage(new HashMap<>(Map.of(
                 "aa", createPrimitiveDomain(),
-                "bb", createPrimitiveDomain()));
+                "bb", createPrimitiveDomain())));
+
         return domain;
     }
 
@@ -93,7 +94,7 @@ public class TestItemsCreator {
 
     static public ConcretePrimitiveMapDomain createConcretePrimitiveMapDomain() {
         ConcretePrimitiveMapDomain domain = new ConcretePrimitiveMapDomain();
-        domain.setPrimitiveMap(Map.of(1, 2L, 3, 4L));
+        domain.setPrimitiveMap(new TreeMap<>(Map.of(1, 2L, 3, 4L)));
         return domain;
     }
 

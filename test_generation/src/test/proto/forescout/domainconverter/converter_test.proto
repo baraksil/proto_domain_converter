@@ -58,10 +58,6 @@ message ConcretePrimitiveMapProto {
     map<int32, int64> primitive_map = 1;
 }
 
-message SortedPrimitiveMapProto {
-    map<int32, int64> primitive_map = 1;
-}
-
 message ConcreteMapToMessageProto {
     map<string, PrimitivesProto> map_to_message = 1;
 }
