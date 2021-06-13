@@ -53,6 +53,17 @@ These annotations are processed during pre-compilation, and a new class is gener
 
 This class has "*toProto*" and "*toDomain*" methods for each annotated class. In your application you should use these methods for the conversion.
 
+Code for conversion User instance into related protobuf message:
+```java
+User userDomain = new User();
+...
+UserProto userProto = ProtoDomainConverter.toProto(userDomain);
+```
+Code for backward conversion:
+```java
+User userDomain = ProtoDomainConverter.toDomain(userProto);
+```
+
 ## Mapping
 ### Basic
 The most important annotations are [_@ProtoClass_](./src/main/java/com/forescout/proto/domainconverter/annotations/ProtoClass.java) and [_@ProtoField_](./src/main/java/com/forescout/proto/domainconverter/annotations/ProtoField.java)
