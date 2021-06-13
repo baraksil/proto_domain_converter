@@ -94,7 +94,7 @@ public class TestItemsCreator {
 
     static public ConcretePrimitiveMapDomain createConcretePrimitiveMapDomain() {
         ConcretePrimitiveMapDomain domain = new ConcretePrimitiveMapDomain();
-        domain.setPrimitiveMap(new HashMap<>(Map.of(1, 2L, 3, 4L)));
+        domain.setPrimitiveMap(new TreeMap<>(Map.of(1, 2L, 3, 4L)));
         return domain;
     }
 

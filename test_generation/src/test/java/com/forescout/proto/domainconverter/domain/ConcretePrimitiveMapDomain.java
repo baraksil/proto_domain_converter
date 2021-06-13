@@ -7,10 +7,11 @@ import lombok.Data;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 @Data
 @ProtoClass(protoClass = ConcretePrimitiveMapProto.class)
 public class ConcretePrimitiveMapDomain {
     @ProtoField
-    private HashMap<Integer, Long> primitiveMap;
+    private TreeMap<Integer, Long> primitiveMap;
 }
