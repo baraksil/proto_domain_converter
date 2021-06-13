@@ -5,6 +5,7 @@ import com.forescout.proto.domainconverter.annotations.ProtoField;
 import com.forescout.proto.domainconverter.test.proto.ConcreteMessageListProto;
 import lombok.Data;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Data
@@ -12,5 +13,5 @@ import java.util.List;
 public class ConcreteMessageListDomain {
 
     @ProtoField
-    private List<PrimitiveDomain> messageList;
+    private LinkedList<PrimitiveDomain> messageList;
 }
