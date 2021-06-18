@@ -5,7 +5,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.com.google.protobuf:protobuf-gradle-plugin:0.8.13"
+        classpath "gradle.plugin.com.google.protobuf:protobuf-gradle-plugin:0.8.16"
     }
 }
 
@@ -47,15 +47,15 @@ dependencies {
     implementation project(':')
     annotationProcessor project(':')
 
-    compileOnly 'org.projectlombok:lombok:1.18.16'
-    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     implementation 'com.google.protobuf:protobuf-java:3.14.0'
 
 
     testAnnotationProcessor project(':')
     testCompileOnly 'org.projectlombok:lombok:1.18.16'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
     testImplementation(platform('org.junit:junit-bom:5.7.0'))
     testImplementation('org.junit.jupiter:junit-jupiter')
 }
