@@ -1,0 +1,132 @@
+package {{converterPackage}};
+
+import javax.annotation.processing.Generated;
+import java.util.stream.Collectors;
+import com.google.protobuf.ByteString;
+{{#classesData}}
+import {{domainFullName}};
+import {{protoFullName}};
+    {{#hasMapper}}
+import {{mapperFullName}};
+    {{/hasMapper}}
+    {{#oneofBaseFieldsData}}
+        {{#oneOfFieldsData}}
+import {{oneofImplClass}};
+        {{/oneOfFieldsData}}
+    {{/oneofBaseFieldsData}}
+    {{#fieldsData}}
+        {{#hasConverter}}
+import {{converterFullName}};
+        {{/hasConverter}}
+    {{/fieldsData}}
+    {{#oneofBaseClassData}}
+        {{#oneOfFieldsData}}
+import {{oneofImplClass}};
+        {{/oneOfFieldsData}}
+    {{/oneofBaseClassData}}
+{{/classesData}}
+
+@Generated(value = "{{generator}}")
+public class {{converterClass}} {
+{{#classesData}}
+    static public {{protoClass}} toProto({{domainClass}} domain) {
+    {{#hasMapper}}
+        {{mapperClass}} mapper = new {{mapperClass}}();
+        return mapper.toProto(domain);
+    {{/hasMapper}}
+    {{^hasMapper}}
+        {{protoClass}}.Builder builder = {{protoClass}}.newBuilder();
+
+    {{#oneofBaseClassData}}
+        {{#oneOfFieldsData}}
+        if(domain.getClass() == {{oneofImplClassSimple}}.class) {
+            {{{addToBuilderCommand}}};
+        } else
+        {{/oneOfFieldsData}}
+     {}
+    {{/oneofBaseClassData}}
+    {{#fieldsData}}
+        {{#hasConverter}}
+        {{converterClass}} converter = new {{converterClass}}();
+        if(converter.shouldAssignToProto(domain.{{domainGetterMethod}}())) {
+            {{{addToBuilderUsingConverter}}};
+        }
+        {{/hasConverter}}
+        {{^hasConverter}}
+        {{{checkNotNullCommand}}}
+            {{{addToBuilderCommand}}};
+        {{{closeCheckNotNullCommand}}}
+        {{/hasConverter}}
+
+    {{/fieldsData}}
+    {{#oneofBaseFieldsData}}
+        if(domain.get{{oneofBaseField}}() == null) {
+        } else
+        {{#oneOfFieldsData}}
+        if(domain.get{{oneofBaseField}}().getClass() == {{oneofImplClassSimple}}.class) {
+            {{{addToBuilderCommand}}};
+        } else
+        {{/oneOfFieldsData}}
+        {}
+
+    {{/oneofBaseFieldsData}}
+        return builder.build();
+    {{/hasMapper}}
+    }
+
+    static public {{domainClass}} toDomain({{protoClass}} proto) {
+    {{#hasMapper}}
+        {{mapperClass}} mapper = new {{mapperClass}}();
+        return mapper.toDomain(proto);
+    {{/hasMapper}}
+    {{^hasMapper}}
+    {{#oneofBaseClassData}}
+        {{domainClass}} domain;
+        switch (proto.get{{oneofProtoName}}Case()) {
+        {{#oneOfFieldsData}}
+            case {{oneofFieldCase}}:
+                {{oneofImplClassSimple}} {{oneofImplVariable}} = {{oneofImplCreation}};
+                {{setValueToVariable}}
+                domain = {{oneofImplVariable}};
+            break;
+        {{/oneOfFieldsData}}
+            default:
+                throw new IllegalArgumentException("Unknown value case for " + proto.getClass() +": " + proto.getValueCase());
+        }
+    {{/oneofBaseClassData}}
+    {{^oneofBaseClassData}}
+        {{domainClass}} domain = new {{domainClass}}();
+    {{/oneofBaseClassData}}
+    {{#fieldsData}}
+        {{#hasConverter}}
+        {{{checkProtoHasValueCommand}}}
+        {{converterClass}} converter = new {{converterClass}}();
+        {{{setInDomainUsingConverter}}};
+        {{{closeProtoHasValueCommand}}}
+        {{/hasConverter}}
+        {{^hasConverter}}
+        {{{checkProtoHasValueCommand}}}
+        {{{setInDomainCommand}}};
+        {{{closeProtoHasValueCommand}}}
+        {{/hasConverter}}
+
+    {{/fieldsData}}
+    {{#oneofBaseFieldsData}}
+        switch (proto.get{{oneofProtoName}}Case()) {
+        {{#oneOfFieldsData}}
+            case {{oneofFieldCase}}:
+                {{oneofImplClassSimple}} {{oneofImplVariable}} = {{oneofImplCreation}};
+                {{setValueToVariable}}
+                domain.set{{oneofBaseField}}({{oneofImplVariable}});
+                break;
+        {{/oneOfFieldsData}}
+        }
+
+    {{/oneofBaseFieldsData}}
+        return domain;
+    {{/hasMapper}}
+    }
+
+
+    {{/classesData}}
+}

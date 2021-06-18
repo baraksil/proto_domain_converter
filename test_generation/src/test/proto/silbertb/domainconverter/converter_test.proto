@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+package silbertb.domainconverter;
+
+option java_package = "org.silbertb.proto.domainconverter.test.proto";
+option java_multiple_files = true;
+option java_outer_classname = "ConverterProto";
+
+message PrimitivesProto {
+    int32 int_value = 1;
+    int64 long_value = 2;
+    float float_value = 3;
+    double double_value = 4;
+    bool boolean_value = 5;
+}
+
+message StringProto {
+    string string_value = 6;
+}
+
+message BytesProto {
+    bytes bytes_value = 1;
+}
+
+message SimpleContainerProto {
+  PrimitivesProto primitives = 2;
+}
+
+message PrimitiveListProto {
+    repeated int32 int_list = 1;
+}
+
+message ConcretePrimitiveListProto {
+    repeated int32 int_list = 1;
+}
+
+message StringListProto {
+    repeated string string_list = 1;
+}
+
+message MessageListProto {
+    repeated PrimitivesProto message_list = 1;
+}
+
+message ConcreteMessageListProto {
+    repeated PrimitivesProto message_list = 1;
+}
+
+message PrimitiveMapProto {
+    map<int32, int64> primitive_map = 1;
+}
+
+message MapToMessageProto {
+    map<string, PrimitivesProto> map_to_message = 1;
+}
+
+message ConcretePrimitiveMapProto {
+    map<int32, int64> primitive_map = 1;
+}
+
+message ConcreteMapToMessageProto {
+    map<string, PrimitivesProto> map_to_message = 1;
+}
+
+message OneofWithoutInheritanceProto {
+    oneof value {
+        int32 int_val = 1;
+        PrimitivesProto primitives = 2;
+    }
+}
+
+message OneofWithFieldInheritanceProto {
+    oneof value {
+        int32 int_val = 1;
+        PrimitivesProto primitives = 2;
+    }
+}
+
+message OneofBaseClassProto {
+    oneof value {
+        string string_val = 1;
+        TwoIntsProto two_ints_val = 2;
+    }
+}
+
+message TwoIntsProto {
+    int32 int_val1 = 1;
+    int32 int_val2 = 2;
+}
+
+message OneofBaseClassWithFieldsProto {
+    string string_val = 1;
+
+    oneof value {
+        int64 long_val = 2;
+        double double_val = 3;
+    }
+}
+
+message AllInOneProto {
+    StringProto str_val = 1;
+    BytesProto bytes_val = 2;
+    ConcreteMapToMessageProto map_val = 3;
+    MessageListProto list_val = 4;
+
+    oneof value1 {
+        int32 oneof1_int_val = 5;
+        PrimitivesProto oneof1_primitives = 6;
+    }
+
+    oneof value2 {
+        int32 oneof2_int_val = 7;
+        PrimitivesProto oneof2_primitives = 8;
+    }
+}
+
+message CustomConverterProto {
+    int32 int_val = 1;
+}
+
+message CustomListConverterProto {
+    repeated int32 int_list = 1;
+}
+
+message CustomMapConverterProto {
+    map<int32, int32> int_map = 1;
+}
+
+message CustomMapperProto {
+    enum Protocol {
+        TCP = 0;
+        UDP = 1;
+    }
+
+    Protocol protocol = 1;
+    StringProto str = 2;
+}
+
