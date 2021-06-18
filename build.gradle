@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-group 'com.forescout.protobuf'
+group 'org.silbertb.protobuf'
 version '1.0-SNAPSHOT'
 
 repositories {

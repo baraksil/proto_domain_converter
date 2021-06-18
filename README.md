@@ -42,14 +42,14 @@ In order to get the jar either clone the repository and build using "gradle buil
 
 For gradle/maven use the following details:  
 repository url: https://maven.pkg.github.com/baraksil/proto_domain_converter  
-groupId: com.forescout.protobuf  
+groupId: org.silbertb.protobuf  
 artifactId: proto_domain_converter  
 version: 1.0-SNAPSHOT
 
 ## How to use it ?
 There are several annotations which map between the application domain objects and the protobuf generated objects. 
 These annotations should be added to the domain classes. They map the domain definitions to the corresponding protobuf definitions.  
-These annotations are processed during pre-compilation, and a new class is generated: *com.forescout.proto.domainconverter.generated.ProtoDomainConverter*.
+These annotations are processed during pre-compilation, and a new class is generated: *org.silbertb.proto.domainconverter.generated.ProtoDomainConverter*.
 
 This class has "*toProto*" and "*toDomain*" methods for each annotated class. In your application you should use these methods for the conversion.
 
@@ -66,7 +66,7 @@ User userDomain = ProtoDomainConverter.toDomain(userProto);
 
 ## Mapping
 ### Basic
-The most important annotations are [_@ProtoClass_](./src/main/java/com/forescout/proto/domainconverter/annotations/ProtoClass.java) and [_@ProtoField_](./src/main/java/com/forescout/proto/domainconverter/annotations/ProtoField.java)
+The most important annotations are [_@ProtoClass_](./src/main/java/org/silbertb/proto/domainconverter/annotations/ProtoClass.java) and [_@ProtoField_](./src/main/java/org/silbertb/proto/domainconverter/annotations/ProtoField.java)
 
 _@ProtoClass_ maps between the domain class and the protobuf generated class.
 _@ProtoField_ maps between the domain field and a corresponding protobuf field within the mapped class. It is assumed that the domain class has standard getter and setter for this field.
@@ -106,7 +106,7 @@ message StringProto {
 ```
 ### Field Value Manipulation
 Sometime it is desired to apply some manipulation on the field value before assigning the value.
-It is possible to do by implementing the interface [_TypeConverter_](https://github.com/baraksil/proto_domain_converter/blob/main/src/main/java/com/forescout/proto/domainconverter/custom/TypeConverter.java) and using the annotation [_@ProtoConverter_](https://github.com/baraksil/proto_domain_converter/blob/main/src/main/java/com/forescout/proto/domainconverter/annotations/ProtoConverter.java).
+It is possible to do by implementing the interface [_TypeConverter_](https://github.com/baraksil/proto_domain_converter/blob/main/src/main/java/org/silbertb/proto/domainconverter/custom/TypeConverter.java) and using the annotation [_@ProtoConverter_](https://github.com/baraksil/proto_domain_converter/blob/main/src/main/java/org/silbertb/proto/domainconverter/annotations/ProtoConverter.java).
 _TypeConverter_ handles the conversion logic.
 _@ProtoConverter_ applies _TypeConverter_ to selected fields.
 
@@ -177,9 +177,9 @@ Therefore there is a flexibility in the mapping. The options are:
 
 This flexibility is achieved by introducing two more annotations which can be used either in the class level or the field level.
 
-[OneofBase](./src/main/java/com/forescout/proto/domainconverter/annotations/OneofBase.java) map between a base class or interface to a oneof group.
+[OneofBase](./src/main/java/org/silbertb/proto/domainconverter/annotations/OneofBase.java) map between a base class or interface to a oneof group.
 
-[OneofField](./src/main/java/com/forescout/proto/domainconverter/annotations/OneofField.java) maps between an imlpementing class or sub-class to the corresponding field in a oneof group.
+[OneofField](./src/main/java/org/silbertb/proto/domainconverter/annotations/OneofField.java) maps between an imlpementing class or sub-class to the corresponding field in a oneof group.
 
 Here are some examples for each one of these cases.
 
@@ -326,7 +326,7 @@ message MultipleOneofsProto {
 ```
 
 ### Custom conversion for a whole class
-Sometime there might not be a one-to-one mapping between the a domain field to protobuf field. In this case there is a need to apply a custom conversion logic in the class level. It can be done by giving the interface [_Mapper_](./src/main/java/com/forescout/proto/domainconverter/custom/Mapper.java) as a parameter to the annotation _@ProtoClass_.
+Sometime there might not be a one-to-one mapping between the a domain field to protobuf field. In this case there is a need to apply a custom conversion logic in the class level. It can be done by giving the interface [_Mapper_](./src/main/java/org/silbertb/proto/domainconverter/custom/Mapper.java) as a parameter to the annotation _@ProtoClass_.
 
 #### Example
 
