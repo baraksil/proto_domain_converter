@@ -46,10 +46,11 @@ public class {{converterClass}} {
         {{/oneOfFieldsData}}
      {}
     {{/oneofBaseClassData}}
+    {{^oneofBaseClassData}}
         {{#constructorParameters}}
             {{#fieldData}}
                 {{#hasConverter}}
-                    {{converterClass}} converter = new {{converterClass}}();
+        {{converterClass}} converter = new {{converterClass}}();
         if(converter.shouldAssignToProto(domain.{{domainGetterMethod}}())) {
              {{{addToBuilderUsingConverter}}};
         }
@@ -73,7 +74,6 @@ public class {{converterClass}} {
 
             {{/oneofFieldData}}
         {{/constructorParameters}}
-    {{^oneofBaseClassData}}
     {{/oneofBaseClassData}}
 
     {{#fieldsData}}
@@ -130,26 +130,26 @@ public class {{converterClass}} {
         {{#constructorParameters}}
             {{#fieldData}}
                 {{#hasConverter}}
-        new {{converterClass}}().toDomainValue(proto.{{protoGetterMethod}}())
+            new {{converterClass}}().toDomainValue(proto.{{protoGetterMethod}}())
                 {{/hasConverter}}
                 {{^hasConverter}}
-        {{{convertProtoValue}}}
+            {{{convertProtoValue}}}
                 {{/hasConverter}}
             {{/fieldData}}
             {{#oneofFieldData}}
-        new Callable<{{domainFieldType}}>() {
-            public {{domainFieldType}} call()  {
-                switch (proto.get{{oneofProtoName}}Case()) {
+            new Callable<{{domainFieldType}}>() {
+                public {{domainFieldType}} call()  {
+                    switch (proto.get{{oneofProtoName}}Case()) {
             {{#oneOfFieldsData}}
-                    case {{oneofFieldCase}}:
-                        {{oneofImplClassSimple}} {{oneofImplVariable}} = {{oneofImplCreation}};
-                        {{setValueToVariable}}
-                        return {{oneofImplVariable}};
+                        case {{oneofFieldCase}}:
+                            {{oneofImplClassSimple}} {{oneofImplVariable}} = {{oneofImplCreation}};
+                            {{setValueToVariable}}
+                            return {{oneofImplVariable}};
             {{/oneOfFieldsData}}
+                    }
+                    throw new IllegalArgumentException("Unknown case type: " + proto.get{{oneofProtoName}}Case());
                 }
-                throw new IllegalArgumentException("Unknown case type: " + proto.get{{oneofProtoName}}Case());
-            }
-        }.call()
+            }.call()
                 {{/oneofFieldData}}
             {{^isLast}},{{/isLast}}
         {{/constructorParameters}}
