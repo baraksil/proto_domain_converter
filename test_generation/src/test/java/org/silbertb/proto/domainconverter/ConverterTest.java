@@ -401,6 +401,15 @@ public class ConverterTest {
     }
 
     @Test
+    void testAllInOneToDomain() {
+        AllInOneProto proto = TestItemsCreator.createAllInOneProto();
+        AllInOneDomain domain = ProtoDomainConverter.toDomain(proto);
+        AllInOneDomain expected = TestItemsCreator.createAllInOneDomain();
+
+        assertEquals(expected, domain);
+    }
+
+    @Test
     void testCustomConverterToDomain() {
         CustomConverterProto proto = TestItemsCreator.createCustomConverterProto();
         CustomConverterDomain domain = ProtoDomainConverter.toDomain(proto);
@@ -470,6 +479,24 @@ public class ConverterTest {
         CustomMapperProto expected = TestItemsCreator.createCustomMapperProto();
 
         assertEquals(expected, proto);
+    }
+
+    @Test
+    void testAllInOneConstructorToProto() {
+        AllInOneConstructorDomain domain = TestItemsCreator.createAllInOneConstructorDomain();
+        AllInOneConstructorProto proto = ProtoDomainConverter.toProto(domain);
+        AllInOneConstructorProto expected = TestItemsCreator.createAllInOneConstructorProto();
+
+        assertEquals(expected, proto);
+    }
+
+    @Test
+    void testAllInOneConstructorToDomain() {
+        AllInOneConstructorProto proto = TestItemsCreator.createAllInOneConstructorProto();
+        AllInOneConstructorDomain domain = ProtoDomainConverter.toDomain(proto);
+        AllInOneConstructorDomain expected = TestItemsCreator.createAllInOneConstructorDomain();
+
+        assertEquals(expected, domain);
     }
 
 }

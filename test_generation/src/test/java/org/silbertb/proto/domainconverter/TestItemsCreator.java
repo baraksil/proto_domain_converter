@@ -312,4 +312,28 @@ public class TestItemsCreator {
         domain.setDoubleVal(0.5);
         return domain;
     }
+
+    static public AllInOneConstructorProto createAllInOneConstructorProto() {
+        return AllInOneConstructorProto.newBuilder()
+                .setStrVal(createStringProto())
+                .setBytesVal(createBytesProto())
+                .setListVal(createMessageListProto())
+                .setMapVal(createConcreteMapToMessageProto())
+                .setOneof1IntVal(3)
+                .setOneof2Primitives(createPrimitivesProto())
+                .build();
+    }
+
+    static public AllInOneConstructorDomain createAllInOneConstructorDomain() {
+        OneofIntImplDomain oneofIntImplDomain = new OneofIntImplDomain();
+        oneofIntImplDomain.setIntVal(3);
+        return new AllInOneConstructorDomain(
+                createStringDomain(),
+                createBytesDomain(),
+                createConcreteMapToMessageDomain(),
+                createMessageListDomain(),
+                oneofIntImplDomain,
+                createPrimitiveDomain()
+        );
+    }
 }
