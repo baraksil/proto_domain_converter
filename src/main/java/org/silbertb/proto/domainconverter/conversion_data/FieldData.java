@@ -1,40 +1,42 @@
 package org.silbertb.proto.domainconverter.conversion_data;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.silbertb.proto.domainconverter.custom.ProtoType;
 
+@Accessors(fluent = true)
+@Getter
+@Builder
 public class FieldData {
-    public ConversionData.FieldType fieldType;
-    public String protoFieldMethodSuffix;
-    public String domainFieldMethodSuffix;
-    public String dataStructureConcreteType;
+    final private FieldType fieldType;
+    final private String protoFieldPascalCase;
+    final private String domainFieldMethodSuffix;
+    final private String dataStructureConcreteType;
 
-    public String converterClass;
-    public String converterFullName;
-    public ProtoType protoTypeForConverter;
+    final private String converterName;
+    final private String converterFullName;
+    final private ProtoType protoTypeForConverter;
 
     public boolean hasConverter() {
-        return converterClass != null;
-    }
-
-    public String converterName() {
-        return converterClass;
+        return converterName != null;
     }
 
     private String protoBuilderSetCommand() {
         switch (protoTypeForConverter) {
             case MAP:
-                return "putAll" + protoFieldMethodSuffix;
+                return "putAll" + protoFieldPascalCase;
             case LIST:
-                return "addAll" + protoFieldMethodSuffix;
+                return "addAll" + protoFieldPascalCase;
             case OTHER:
-                return "set" + protoFieldMethodSuffix;
+                return "set" + protoFieldPascalCase;
             default:
                 throw new RuntimeException("Unhandled proto type: " + fieldType);
         }
     }
 
     private String domainGetterMethodPrefix() {
-        if(fieldType.equals(ConversionData.FieldType.BOOLEAN)) {
+        if(fieldType.equals(FieldType.BOOLEAN)) {
             return "is";
         }
 
@@ -63,7 +65,7 @@ public class FieldData {
     }
 
     public String protoGetterMethod() {
-        return "get" + protoFieldMethodSuffix + protoGetterSuffix();
+        return "get" + protoFieldPascalCase + protoGetterSuffix();
     }
 
     public String setInDomainUsingConverter() {
@@ -103,22 +105,22 @@ public class FieldData {
     public String addToBuilderCommand() {
         switch (fieldType) {
             case BOOLEAN:
-                return "builder.set" + protoFieldMethodSuffix + "(domain.is" + domainFieldMethodSuffix + "())";
+                return "builder.set" + protoFieldPascalCase + "(domain.is" + domainFieldMethodSuffix + "())";
             case MESSAGE:
-                return "builder.set" + protoFieldMethodSuffix + "(toProto(domain.get" + domainFieldMethodSuffix + "()))";
+                return "builder.set" + protoFieldPascalCase + "(toProto(domain.get" + domainFieldMethodSuffix + "()))";
             case PRIMITIVE_LIST:
-                return "builder.addAll" + protoFieldMethodSuffix + "(domain.get" + domainFieldMethodSuffix + "())";
+                return "builder.addAll" + protoFieldPascalCase + "(domain.get" + domainFieldMethodSuffix + "())";
             case MESSAGE_LIST:
-                return "domain.get" + domainFieldMethodSuffix + "().forEach(item -> builder.add" + protoFieldMethodSuffix + "(toProto(item)))";
+                return "domain.get" + domainFieldMethodSuffix + "().forEach(item -> builder.add" + protoFieldPascalCase + "(toProto(item)))";
             case PRIMITIVE_MAP:
-                return "builder.putAll" + protoFieldMethodSuffix + "(domain.get" + domainFieldMethodSuffix + "())";
+                return "builder.putAll" + protoFieldPascalCase + "(domain.get" + domainFieldMethodSuffix + "())";
             case MAP_TO_MESSAGE:
-                return "domain.get" + domainFieldMethodSuffix + "().forEach((key, value) -> builder.put" + protoFieldMethodSuffix + "(key, toProto(value)))";
+                return "domain.get" + domainFieldMethodSuffix + "().forEach((key, value) -> builder.put" + protoFieldPascalCase + "(key, toProto(value)))";
             case BYTES:
-                return "builder.set" + protoFieldMethodSuffix + "(ByteString.copyFrom(domain.get" + domainFieldMethodSuffix + "()))";
+                return "builder.set" + protoFieldPascalCase + "(ByteString.copyFrom(domain.get" + domainFieldMethodSuffix + "()))";
             case STRING:
             case OTHER:
-                return "builder.set" + protoFieldMethodSuffix + "(domain.get" + domainFieldMethodSuffix + "())";
+                return "builder.set" + protoFieldPascalCase + "(domain.get" + domainFieldMethodSuffix + "())";
             default:
                 throw new RuntimeException("Unhandled field type: " + fieldType);
         }
@@ -126,7 +128,7 @@ public class FieldData {
 
     public String checkProtoHasValueCommand() {
         if(isNullableProtoType()) {
-            return "if(proto.has" + protoFieldMethodSuffix + "()) {";
+            return "if(proto.has" + protoFieldPascalCase + "()) {";
         }
         return "";
     }
@@ -136,7 +138,7 @@ public class FieldData {
     }
 
     public boolean isNullableProtoType() {
-        return fieldType.equals(ConversionData.FieldType.MESSAGE);
+        return fieldType.equals(FieldType.MESSAGE);
     }
 
     public String setInDomainCommand() {
@@ -148,19 +150,19 @@ public class FieldData {
             case BOOLEAN:
             case STRING:
             case OTHER:
-                return "proto.get" + protoFieldMethodSuffix + "()";
+                return "proto.get" + protoFieldPascalCase + "()";
             case PRIMITIVE_MAP:
-                return "new " + dataStructureConcreteType + "<>(proto.get" + protoFieldMethodSuffix + "())";
+                return "new " + dataStructureConcreteType + "<>(proto.get" + protoFieldPascalCase + "())";
             case MESSAGE:
-                return "toDomain(proto.get" + protoFieldMethodSuffix + "())";
+                return "toDomain(proto.get" + protoFieldPascalCase + "())";
             case PRIMITIVE_LIST:
-                return "new " + dataStructureConcreteType + "<>(proto.get" + protoFieldMethodSuffix + "List())";
+                return "new " + dataStructureConcreteType + "<>(proto.get" + protoFieldPascalCase + "List())";
             case MESSAGE_LIST:
                 return "proto.getMessageListList().stream().map(item -> toDomain(item)).collect(Collectors.toCollection(" + dataStructureConcreteType + "::new))";
             case MAP_TO_MESSAGE:
-                return "proto.get" + protoFieldMethodSuffix + "Map().entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> toDomain(e.getValue()), (v1, v2) -> v1, " + dataStructureConcreteType + "::new))";
+                return "proto.get" + protoFieldPascalCase + "Map().entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> toDomain(e.getValue()), (v1, v2) -> v1, " + dataStructureConcreteType + "::new))";
             case BYTES:
-                return "proto.get" + protoFieldMethodSuffix + "().toByteArray()";
+                return "proto.get" + protoFieldPascalCase + "().toByteArray()";
             default:
                 throw new RuntimeException("Unhandled field type: " + fieldType);
         }

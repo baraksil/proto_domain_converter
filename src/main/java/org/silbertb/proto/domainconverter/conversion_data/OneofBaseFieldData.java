@@ -1,11 +1,18 @@
 package org.silbertb.proto.domainconverter.conversion_data;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Accessors(fluent = true)
+@Getter
+@Builder
 public class OneofBaseFieldData {
-    public String domainFieldType;
-    public String oneofBaseField;
-    public String oneofProtoName;
-    public List<OneofFieldData> oneOfFieldsData = new ArrayList<>();
+    final private String domainFieldType;
+    final private String oneofBaseField;
+    final private String oneofProtoName;
+    final private List<OneofFieldData> oneOfFieldsData;
 }

@@ -34,7 +34,7 @@ public class ConverterGenerator extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         ConversionData conversionData = createConversionData(annotations, roundEnv);
-        if(conversionData.classesData.isEmpty()) {
+        if(conversionData.classesData().isEmpty()) {
             return true;
         }
 
@@ -54,7 +54,7 @@ public class ConverterGenerator extends AbstractProcessor {
 
         Filer filer = processingEnv.getFiler();
         JavaFileObject fileObject = filer.createSourceFile(
-                conversionData.converterPackage + "." + conversionData.converterClass);
+                conversionData.converterPackage() + "." + conversionData.converterClass());
         try (PrintWriter out = new PrintWriter(fileObject.openWriter())) {
             m.execute(out, conversionData);
             out.flush();
@@ -66,51 +66,61 @@ public class ConverterGenerator extends AbstractProcessor {
             converterName = "org.silbertb.proto.domainconverter.generated.ProtoDomainConverter";
         }
 
-        ConversionData conversionData =
-                new ConversionData(
-                        this.getClass().getName(),
-                        StringUtils.getPackage(converterName),
-                        StringUtils.getSimpleName(converterName));
+        ConversionData.ConversionDataBuilder conversionData =
+                ConversionData.builder()
+                        .generator(this.getClass().getName())
+                        .converterClass(StringUtils.getSimpleName(converterName))
+                        .converterPackage(StringUtils.getPackage(converterName));
+
+        ArrayList<ClassData> classesData = new ArrayList<>();
+
         for ( TypeElement annotation : annotations ) {
             for (Element domainElement : roundEnv.getElementsAnnotatedWith(annotation)) {
-                ConversionData.ClassData classData = createClassData((TypeElement )domainElement);
-                conversionData.classesData.add(classData);
+                ClassData classData = createClassData((TypeElement )domainElement);
+                classesData.add(classData);
             }
         }
-        return conversionData;
+
+        return conversionData.classesData(classesData).build();
     }
 
-    private ConversionData.ClassData createClassData(TypeElement  domainElement) {
-        ConversionData.ClassData classData = new ConversionData.ClassData();
-        classData.domainClass = domainElement.getSimpleName().toString();
-        classData.domainFullName = domainElement.getQualifiedName().toString();
-
+    private ClassData createClassData(TypeElement  domainElement) {
         ProtoClass protoClassAnnotation = domainElement.getAnnotation(ProtoClass.class);
         TypeMirror protoClass = langModelUtil.getClassFromAnnotation(protoClassAnnotation::protoClass);
 
-        classData.protoFullName = protoClass.toString();
-        classData.protoClass = StringUtils.getSimpleName(classData.protoFullName);
+
+        ClassData.ClassDataBuilder classData = ClassData.builder()
+                .domainClass(domainElement.getSimpleName().toString())
+                .domainFullName(domainElement.getQualifiedName().toString())
+                .protoFullName(protoClass.toString())
+                .protoClass(StringUtils.getSimpleName(protoClass.toString()));
+
         TypeMirror mapperClass = langModelUtil.getClassFromAnnotation(protoClassAnnotation::mapper);
         String mapperFullName = mapperClass.toString();
 
-        classData.mapperFullName = mapperFullName.equals(NullMapper.class.getName()) ? null : mapperFullName;
-        classData.mapperClass = classData.mapperFullName == null ? null : StringUtils.getSimpleName(mapperFullName);
-
-        if(classData.mapperFullName != null) {
-            return classData;
+        if(!mapperFullName.equals(NullMapper.class.getName())) {
+            return classData
+                    .mapperFullName(mapperFullName)
+                    .mapperClass(StringUtils.getSimpleName(mapperFullName))
+                    .constructorParameters(Collections.emptyList())
+                    .fieldsData(Collections.emptyList())
+                    .oneofBaseFieldsData(Collections.emptyList())
+                    .build();
         }
 
-        classData.constructorParameters = getConstructorParametersData(domainElement);
+        classData.constructorParameters(getConstructorParametersData(domainElement));
 
+        ArrayList<FieldData> fieldDataList = new ArrayList<>();
+        ArrayList<OneofBaseFieldData> oneofBaseFieldsDataList = new ArrayList<>();
         for(Element field : getDomainFields(domainElement, protoClassAnnotation.withInheritedFields())) {
             FieldData fieldData = createFieldData((VariableElement)field);
             if(fieldData != null) {
-                classData.fieldsData.add(fieldData);
+                fieldDataList.add(fieldData);
             }
 
             OneofBaseFieldData oneofBaseFieldData = createOneofBaseFieldData((VariableElement)field);
             if(oneofBaseFieldData != null) {
-                classData.oneofBaseFieldsData.add(oneofBaseFieldData);
+                oneofBaseFieldsDataList.add(oneofBaseFieldData);
             }
 
             if(fieldData != null && oneofBaseFieldData != null) {
@@ -118,10 +128,12 @@ public class ConverterGenerator extends AbstractProcessor {
             }
         }
 
-        OneofBase oneofBaseAnnotation = domainElement.getAnnotation(OneofBase.class);
-        classData.oneofBaseClassData = createOneofBaseClassData(oneofBaseAnnotation);
+        classData.fieldsData(fieldDataList).oneofBaseFieldsData(oneofBaseFieldsDataList);
 
-        return classData;
+        OneofBase oneofBaseAnnotation = domainElement.getAnnotation(OneofBase.class);
+        classData.oneofBaseClassData(createOneofBaseClassData(oneofBaseAnnotation));
+
+        return classData.build();
     }
 
     private List<ParameterData> getConstructorParametersData(final TypeElement domainElement) {
@@ -148,7 +160,6 @@ public class ConverterGenerator extends AbstractProcessor {
 
                 OneofBaseFieldData oneofBaseFieldData = createOneofBaseFieldData(param);
                 if(oneofBaseFieldData != null) {
-                    oneofBaseFieldData.domainFieldType = param.asType().toString();
                     ParameterData parameterData = new ParameterData();
                     parameterData.oneofFieldData = oneofBaseFieldData;
                     constructorParameters.add(parameterData);
@@ -173,9 +184,10 @@ public class ConverterGenerator extends AbstractProcessor {
             return null;
         }
 
-        OneofBaseClassData oneofBaseClassData = new OneofBaseClassData();
-        oneofBaseClassData.oneofProtoName = StringUtils.snakeCaseToPascalCase(oneofBaseAnnotation.oneofName());
-        oneofBaseClassData.oneOfFieldsData = createOneofFieldDataList(oneofBaseAnnotation);
+        OneofBaseClassData oneofBaseClassData = new OneofBaseClassData(
+                StringUtils.snakeCaseToPascalCase(oneofBaseAnnotation.oneofName()),
+                createOneofFieldDataList(oneofBaseAnnotation, null)
+                );
 
         return oneofBaseClassData;
     }
@@ -186,30 +198,31 @@ public class ConverterGenerator extends AbstractProcessor {
             return null;
         }
 
-        OneofBaseFieldData oneofBaseFieldData = new OneofBaseFieldData();
-        oneofBaseFieldData.oneofProtoName = oneofBaseAnnotation.oneofName().equals("") ?
-                StringUtils.capitalize(field.getSimpleName().toString()) :
-                StringUtils.snakeCaseToPascalCase(oneofBaseAnnotation.oneofName());
-        oneofBaseFieldData.oneofBaseField = StringUtils.capitalize(field.getSimpleName().toString());
+        String oneofBaseField = StringUtils.capitalize(field.getSimpleName().toString());
+        OneofBaseFieldData.OneofBaseFieldDataBuilder oneofBaseFieldData = OneofBaseFieldData.builder();
+        oneofBaseFieldData
+                .oneofProtoName(
+                        oneofBaseAnnotation.oneofName().equals("") ?
+                                StringUtils.capitalize(field.getSimpleName().toString()) :
+                                StringUtils.snakeCaseToPascalCase(oneofBaseAnnotation.oneofName()))
+                .oneofBaseField(oneofBaseField)
+                .oneOfFieldsData(createOneofFieldDataList(oneofBaseAnnotation, oneofBaseField))
+                .domainFieldType(field.asType().toString());
 
-        oneofBaseFieldData.oneOfFieldsData = createOneofFieldDataList(oneofBaseAnnotation);
-        for(OneofFieldData oneofFieldData : oneofBaseFieldData.oneOfFieldsData) {
-            oneofFieldData.domainBaseField = oneofBaseFieldData.oneofBaseField;
-        }
 
-        return oneofBaseFieldData;
+        return oneofBaseFieldData.build();
     }
 
-    private List<OneofFieldData> createOneofFieldDataList(OneofBase oneofBaseAnnotation) {
+    private List<OneofFieldData> createOneofFieldDataList(OneofBase oneofBaseAnnotation, String oneofBaseField) {
         List<OneofFieldData> oneOfFieldsData = new ArrayList<>();
         for(OneofField oneofFieldAnnotation : oneofBaseAnnotation.oneOfFields()) {
-            OneofFieldData oneofFieldData = createOneofFieldData(oneofFieldAnnotation);
+            OneofFieldData oneofFieldData = createOneofFieldData(oneofFieldAnnotation, oneofBaseField);
             oneOfFieldsData.add(oneofFieldData);
         }
         return oneOfFieldsData;
     }
 
-    private OneofFieldData createOneofFieldData(OneofField oneofFieldAnnotation) {
+    private OneofFieldData createOneofFieldData(OneofField oneofFieldAnnotation, String oneofBaseField) {
         OneofFieldData oneofFieldData = new OneofFieldData();
 
         oneofFieldData.oneofFieldCase = oneofFieldAnnotation.protoField().toUpperCase();
@@ -219,7 +232,7 @@ public class ConverterGenerator extends AbstractProcessor {
         oneofFieldData.oneofImplClass = domainType.toString();
         oneofFieldData.oneofImplClassSimple = ((DeclaredType)domainType).asElement().getSimpleName().toString();
         oneofFieldData.fieldIsMessage = isProtoMessage(processingEnv.getElementUtils().getTypeElement(oneofFieldData.oneofImplClass).asType());
-
+        oneofFieldData.domainBaseField = oneofBaseField;
 
         return oneofFieldData;
     }
@@ -229,22 +242,25 @@ public class ConverterGenerator extends AbstractProcessor {
         if(protoFieldAnnotation == null) {
             return null;
         }
-        TypeMirror fieldType = field.asType();
-        FieldData fieldData = new FieldData();
 
-        fieldData.domainFieldMethodSuffix = StringUtils.capitalize(field.getSimpleName().toString());
-        fieldData.protoFieldMethodSuffix = getProtoFieldMethodSuffix(field, protoFieldAnnotation);
-        fieldData.fieldType = calculateFieldType(fieldType);
-        fieldData.dataStructureConcreteType = calculateDataStructureConcreteType(field);
+        TypeMirror fieldType = field.asType();
+        FieldData.FieldDataBuilder fieldData = FieldData.builder();
+
+        fieldData.domainFieldMethodSuffix(StringUtils.capitalize(field.getSimpleName().toString()))
+                .protoFieldPascalCase(getProtoFieldMethodSuffix(field, protoFieldAnnotation))
+                .fieldType(calculateFieldType(fieldType))
+                .dataStructureConcreteType(calculateDataStructureConcreteType(field));
 
         ProtoConverter protoConverterAnnotation = field.getAnnotation(ProtoConverter.class);
         if(protoConverterAnnotation != null) {
-            fieldData.protoTypeForConverter = protoConverterAnnotation.protoType();
             TypeMirror converterType = langModelUtil.getClassFromAnnotation(() -> protoConverterAnnotation.converter());
-            fieldData.converterFullName = converterType.toString();
-            fieldData.converterClass = StringUtils.getSimpleName(fieldData.converterFullName);
+
+            fieldData.protoTypeForConverter(protoConverterAnnotation.protoType())
+                    .converterFullName(converterType.toString())
+                    .converterName(StringUtils.getSimpleName(converterType.toString()));
         }
-        return fieldData;
+
+        return fieldData.build();
     }
 
     private String calculateDataStructureConcreteType(VariableElement field) {
@@ -273,42 +289,42 @@ public class ConverterGenerator extends AbstractProcessor {
         return null;
     }
 
-    private ConversionData.FieldType calculateFieldType(TypeMirror fieldType) {
+    private FieldType calculateFieldType(TypeMirror fieldType) {
         if(fieldType.getKind().equals(TypeKind.BOOLEAN)) {
-            return ConversionData.FieldType.BOOLEAN;
+            return FieldType.BOOLEAN;
         }
 
         if(langModelUtil.isSameType(fieldType, String.class)) {
-            return ConversionData.FieldType.STRING;
+            return FieldType.STRING;
         }
 
         if(langModelUtil.isByteArray(fieldType)) {
-            return ConversionData.FieldType.BYTES;
+            return FieldType.BYTES;
         }
 
         if(isProtoMessage(fieldType)) {
-            return ConversionData.FieldType.MESSAGE;
+            return FieldType.MESSAGE;
         }
 
         if(langModelUtil.isList(fieldType)) {
             TypeMirror typeArgument = langModelUtil.getGenericsTypes(fieldType).get(0);
             if(isProtoMessage(typeArgument)) {
-                return ConversionData.FieldType.MESSAGE_LIST;
+                return FieldType.MESSAGE_LIST;
             } else {
-                return ConversionData.FieldType.PRIMITIVE_LIST;
+                return FieldType.PRIMITIVE_LIST;
             }
         }
 
         if(langModelUtil.isMap(fieldType)) {
             TypeMirror typeArgument = langModelUtil.getGenericsTypes(fieldType).get(1);
             if(isProtoMessage(typeArgument)) {
-                return ConversionData.FieldType.MAP_TO_MESSAGE;
+                return FieldType.MAP_TO_MESSAGE;
             } else {
-                return ConversionData.FieldType.PRIMITIVE_MAP;
+                return FieldType.PRIMITIVE_MAP;
             }
         }
 
-        return ConversionData.FieldType.OTHER;
+        return FieldType.OTHER;
     }
 
     private boolean isProtoMessage(TypeMirror fieldType) {

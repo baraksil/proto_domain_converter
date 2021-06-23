@@ -50,7 +50,7 @@ public class {{converterClass}} {
         {{#constructorParameters}}
             {{#fieldData}}
                 {{#hasConverter}}
-        {{converterClass}} converter = new {{converterClass}}();
+        {{converterName}} converter = new {{converterName}}();
         if(converter.shouldAssignToProto(domain.{{domainGetterMethod}}())) {
              {{{addToBuilderUsingConverter}}};
         }
@@ -78,7 +78,7 @@ public class {{converterClass}} {
 
     {{#fieldsData}}
         {{#hasConverter}}
-        {{converterClass}} converter = new {{converterClass}}();
+        {{converterName}} converter = new {{converterName}}();
         if(converter.shouldAssignToProto(domain.{{domainGetterMethod}}())) {
             {{{addToBuilderUsingConverter}}};
         }
@@ -130,7 +130,7 @@ public class {{converterClass}} {
         {{#constructorParameters}}
             {{#fieldData}}
                 {{#hasConverter}}
-            new {{converterClass}}().toDomainValue(proto.{{protoGetterMethod}}())
+            new {{converterName}}().toDomainValue(proto.{{protoGetterMethod}}())
                 {{/hasConverter}}
                 {{^hasConverter}}
             {{{convertProtoValue}}}
@@ -159,7 +159,7 @@ public class {{converterClass}} {
     {{#fieldsData}}
         {{#hasConverter}}
         {{{checkProtoHasValueCommand}}}
-        {{converterClass}} converter = new {{converterClass}}();
+        {{converterName}} converter = new {{converterName}}();
         {{{setInDomainUsingConverter}}};
         {{{closeProtoHasValueCommand}}}
         {{/hasConverter}}
