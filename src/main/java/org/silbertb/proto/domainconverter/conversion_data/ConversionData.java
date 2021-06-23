@@ -29,6 +29,7 @@ public class ConversionData {
         public boolean hasMapper() {
             return mapperClass != null;
         }
+        public List<ParameterData> constructorParameters = new ArrayList<>();
     }
 
     public enum FieldType {

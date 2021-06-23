@@ -69,7 +69,8 @@ User userDomain = ProtoDomainConverter.toDomain(userProto);
 The most important annotations are [_@ProtoClass_](./src/main/java/org/silbertb/proto/domainconverter/annotations/ProtoClass.java) and [_@ProtoField_](./src/main/java/org/silbertb/proto/domainconverter/annotations/ProtoField.java)
 
 _@ProtoClass_ maps between the domain class and the protobuf generated class.
-_@ProtoField_ maps between the domain field and a corresponding protobuf field within the mapped class. It is assumed that the domain class has standard getter and setter for this field.
+_@ProtoField_ maps between the domain field or constructor parameter and a corresponding protobuf field within the mapped class. 
+It is assumed that the domain class has standard getters and setter to this field. If _@ProtoField_ annotated a constructor parameter then there is no need for a setter.
 
 #### Example:
 
@@ -84,7 +85,7 @@ public class StringDomain {
 ##### Protobuf
 ```protobuf
 message StringProto {
-    string string_value = 6;
+    string string_value = 1;
 }
 ```
 ### Different Field Names
@@ -380,6 +381,35 @@ message TransportProto{
     Protocol protocol = 1;
 }
 ```
+### Constructor Mapping
+All kind of mappings that are possible using field mapping are possible also in constructor mapping.
+The same annotations that are attached to a field can be attached to a constructor parameter.
+It is required to put [_@ProtoConstructor_](./src/main/java/org/silbertb/proto/domainconverter/annotations/ProtoConstructor.java) before the constructor.
+Only one constructor can be annotation with _@ProtoConstructor_, and it has to be public.
+
+#### Example:
+
+##### Domain
+```java
+@ProtoClass(protoClass = StringProto.class)
+public class StringDomain {
+
+  private String stringValue;
+
+  @ProtoConstructor
+  public StringDomain(@ProtoField String stringValue) {
+    this.stringValue = stringValue;    
+  }
+    
+}
+```
+##### Protobuf
+```protobuf
+message StringProto {
+    string string_value = 1;
+}
+```
+
 ## Roadmap
 
 Please use [open issues](https://github.com/baraksil/proto_domain_converter/issues) to propose features and report defects.

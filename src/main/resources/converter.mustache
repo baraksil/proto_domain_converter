@@ -3,6 +3,7 @@ package {{converterPackage}};
 import javax.annotation.processing.Generated;
 import java.util.stream.Collectors;
 import com.google.protobuf.ByteString;
+import java.util.concurrent.Callable;
 {{#classesData}}
 import {{domainFullName}};
 import {{protoFullName}};
@@ -45,6 +46,36 @@ public class {{converterClass}} {
         {{/oneOfFieldsData}}
      {}
     {{/oneofBaseClassData}}
+    {{^oneofBaseClassData}}
+        {{#constructorParameters}}
+            {{#fieldData}}
+                {{#hasConverter}}
+        {{converterClass}} converter = new {{converterClass}}();
+        if(converter.shouldAssignToProto(domain.{{domainGetterMethod}}())) {
+             {{{addToBuilderUsingConverter}}};
+        }
+                {{/hasConverter}}
+                {{^hasConverter}}
+        {{{checkNotNullCommand}}}
+            {{{addToBuilderCommand}}};
+        {{{closeCheckNotNullCommand}}}
+                {{/hasConverter}}
+
+            {{/fieldData}}
+            {{#oneofFieldData}}
+        if(domain.get{{oneofBaseField}}() == null) {
+        } else
+                {{#oneOfFieldsData}}
+        if(domain.get{{oneofBaseField}}().getClass() == {{oneofImplClassSimple}}.class) {
+            {{{addToBuilderCommand}}};
+        } else
+                {{/oneOfFieldsData}}
+        {}
+
+            {{/oneofFieldData}}
+        {{/constructorParameters}}
+    {{/oneofBaseClassData}}
+
     {{#fieldsData}}
         {{#hasConverter}}
         {{converterClass}} converter = new {{converterClass}}();
@@ -95,7 +126,35 @@ public class {{converterClass}} {
         }
     {{/oneofBaseClassData}}
     {{^oneofBaseClassData}}
-        {{domainClass}} domain = new {{domainClass}}();
+        {{domainClass}} domain = new {{domainClass}}(
+        {{#constructorParameters}}
+            {{#fieldData}}
+                {{#hasConverter}}
+            new {{converterClass}}().toDomainValue(proto.{{protoGetterMethod}}())
+                {{/hasConverter}}
+                {{^hasConverter}}
+            {{{convertProtoValue}}}
+                {{/hasConverter}}
+            {{/fieldData}}
+            {{#oneofFieldData}}
+            new Callable<{{domainFieldType}}>() {
+                public {{domainFieldType}} call()  {
+                    switch (proto.get{{oneofProtoName}}Case()) {
+            {{#oneOfFieldsData}}
+                        case {{oneofFieldCase}}:
+                            {{oneofImplClassSimple}} {{oneofImplVariable}} = {{oneofImplCreation}};
+                            {{setValueToVariable}}
+                            return {{oneofImplVariable}};
+            {{/oneOfFieldsData}}
+                    }
+                    throw new IllegalArgumentException("Unknown case type: " + proto.get{{oneofProtoName}}Case());
+                }
+            }.call()
+                {{/oneofFieldData}}
+            {{^isLast}},{{/isLast}}
+        {{/constructorParameters}}
+        );
+
     {{/oneofBaseClassData}}
     {{#fieldsData}}
         {{#hasConverter}}
@@ -106,7 +165,7 @@ public class {{converterClass}} {
         {{/hasConverter}}
         {{^hasConverter}}
         {{{checkProtoHasValueCommand}}}
-        {{{setInDomainCommand}}};
+            {{{setInDomainCommand}}};
         {{{closeProtoHasValueCommand}}}
         {{/hasConverter}}
 

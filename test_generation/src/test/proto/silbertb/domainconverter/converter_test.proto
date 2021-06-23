@@ -114,7 +114,28 @@ message AllInOneProto {
     }
 }
 
+message AllInOneConstructorProto {
+    StringProto str_val = 1;
+    BytesProto bytes_val = 2;
+    ConcreteMapToMessageProto map_val = 3;
+    MessageListProto list_val = 4;
+
+    oneof value1 {
+        int32 oneof1_int_val = 5;
+        PrimitivesProto oneof1_primitives = 6;
+    }
+
+    oneof value2 {
+        int32 oneof2_int_val = 7;
+        PrimitivesProto oneof2_primitives = 8;
+    }
+}
+
 message CustomConverterProto {
+    int32 int_val = 1;
+}
+
+message CustomConverterConstructorProto {
     int32 int_val = 1;
 }
 

@@ -9,10 +9,7 @@ import org.silbertb.proto.domainconverter.custom.NullMapper;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -103,6 +100,8 @@ public class ConverterGenerator extends AbstractProcessor {
             return classData;
         }
 
+        classData.constructorParameters = getConstructorParametersData(domainElement);
+
         for(Element field : getDomainFields(domainElement, protoClassAnnotation.withInheritedFields())) {
             FieldData fieldData = createFieldData((VariableElement)field);
             if(fieldData != null) {
@@ -125,6 +124,50 @@ public class ConverterGenerator extends AbstractProcessor {
         return classData;
     }
 
+    private List<ParameterData> getConstructorParametersData(final TypeElement domainElement) {
+        List<ParameterData> constructorParameters = new ArrayList<>();
+        List<Element> constructors = domainElement.getEnclosedElements().stream()
+                .filter(e -> e.getKind().equals(ElementKind.CONSTRUCTOR) && e.getModifiers().contains(Modifier.PUBLIC))
+                .collect(Collectors.toList());
+        for(Element constructor : constructors) {
+            ProtoConstructor protoConstructorAnnotation = constructor.getAnnotation(ProtoConstructor.class);
+            if(protoConstructorAnnotation == null) {
+                continue;
+            }
+
+            if(!constructorParameters.isEmpty()) {
+                throw new IllegalArgumentException("More than one constructors are annotated with @ProtoConstructor. class: " + domainElement);
+            }
+            for(VariableElement param : ((ExecutableElement)constructor).getParameters()) {
+                FieldData fieldData = createFieldData(param);
+                if(fieldData != null) {
+                    ParameterData parameterData = new ParameterData();
+                    parameterData.fieldData = fieldData;
+                    constructorParameters.add(parameterData);
+                }
+
+                OneofBaseFieldData oneofBaseFieldData = createOneofBaseFieldData(param);
+                if(oneofBaseFieldData != null) {
+                    oneofBaseFieldData.domainFieldType = param.asType().toString();
+                    ParameterData parameterData = new ParameterData();
+                    parameterData.oneofFieldData = oneofBaseFieldData;
+                    constructorParameters.add(parameterData);
+                }
+
+                if(fieldData != null && oneofBaseFieldData != null) {
+                    throw new IllegalArgumentException("constructor parameter is annotated with both 'ProtoField' and 'OneofField'. param: " + param);
+                }
+
+                if(fieldData == null && oneofBaseFieldData == null) {
+                    throw new IllegalArgumentException("constructor parameter is not annotated with either 'ProtoField' and 'OneofField'. param: " + param);
+                }
+            }
+            if(constructorParameters.size() > 0) {
+                constructorParameters.get(constructorParameters.size()-1).isLast = true;
+            }
+        }
+        return constructorParameters;
+    }
     private OneofBaseClassData createOneofBaseClassData(OneofBase oneofBaseAnnotation) {
         if(oneofBaseAnnotation == null) {
             return null;
